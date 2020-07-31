@@ -1,0 +1,9 @@
+check events
+entering
+entering2
+event done
+bef draw
+3
+doing main render
+after highlight
+a1
