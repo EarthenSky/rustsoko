@@ -1,9 +1,5501 @@
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
 check events
 entering
 entering2
 event done
 bef draw
-3
 doing main render
 after highlight
 a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+entering
+entering2
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+entering
+entering2
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+entering
+entering2
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+entering
+entering2
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+entering
+entering2
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+entering
+entering2
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+entering
+entering2
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+entering
+entering2
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+entering
+entering2
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after highlight
+a1
+a2
+a1
+a2
+a1
+a2
+a1
+a2
+after recursion
+after render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+entering
+entering2
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+entering
+entering2
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+entering
+entering2
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done
+bef draw
+doing main render
+after window render
+after draw
+check events
+event done

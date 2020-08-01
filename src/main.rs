@@ -2,8 +2,10 @@ use std::{
     io,
     io::{stdout, Write},
     fs::{File, OpenOptions},
+    panic,
+    error::Error,
+    sync::atomic::{AtomicU32, Ordering},
 };
-use std::error::Error;
 use crossterm::{
     //event::{self, DisableMouseCapture, EnableMouseCapture, Event as CEvent, KeyCode},
     event::{read, Event, KeyCode},
@@ -17,7 +19,10 @@ use tui::widgets::{Block, Borders};
 use tui::layout::{Layout, Constraint, Direction, Rect};
 use tui::style::{Style, Color};
 
+
+
 fn main() -> Result<(), Box<dyn Error>> {
+    setup_panic_hook();
     let mut app = App::new()?;
     app.run()?;
     Ok(())
@@ -32,6 +37,17 @@ fn write_log(s: &str) {
     file.write_all(s.as_bytes()).expect("logger function failed write D:");
 }
 
+// debug messages go to log file.
+fn setup_panic_hook() {
+    panic::set_hook(Box::new(|info| {
+        //disable_raw_mode();
+        //execute!(self.terminal.backend_mut(), LeaveAlternateScreen);
+        //self.terminal.show_cursor();
+        //println!("{:?}", info);
+        write_log(&format!("{:?}", info));
+    }));
+}
+
 // The cursor can intelligently move through the window as long as the items
 // are placed in the correct orientations in the matrix.
 pub struct Cursor {
@@ -44,7 +60,7 @@ impl Cursor {
 
     pub fn move_left(&mut self, window: &Window) {
         let width = window.children.width as u32;
-        if (self.position - 1 >= 0) && (width != 0) && (self.position % width > 0) {
+        if (self.position >= 1) && (width != 0) && (self.position % width > 0) {
             self.position -= 1;
         }
     }
@@ -59,8 +75,7 @@ impl Cursor {
 
     pub fn move_up(&mut self, window: &Window) {
         let width = window.children.width as u32;
-        write_log(&format!("{}\n", width));
-        if self.position - width >= 0 {
+        if self.position >= width {
             self.position -= width;
         }
     }
@@ -215,11 +230,15 @@ impl Drop for App {
     }
 }
 
+// for generating unique ids.
+static COUNTER: AtomicU32 = AtomicU32::new(0);
+
 //TODO: window class
 // Window class is like a single item of a tree of Rectangles. Each rectangle has 
 // more rectangles inside of it & optionally attached behaviours.
 // The render area of the root node is `terminal.get_frame().size()`
 pub struct Window {
+    id: u32,
     item: u32,
     pub is_active: bool,
     pub rendered: bool,
@@ -233,6 +252,7 @@ impl Window {
                 activate_function: Option<fn()>, 
                 render_function: Option<fn(&mut App, Rect)> ) -> Window {
         Window {
+            id: Window::new_id(),
             item,
             is_active: false,
             rendered: false,
@@ -241,6 +261,9 @@ impl Window {
             render_function,
         }
     }
+
+    // for generating unique ids.
+    fn new_id() -> u32 { COUNTER.fetch_add(1, Ordering::Relaxed) }
 
     // currently holds the 1# spot for most ghetto code
     pub fn placeholder() -> Window {
@@ -261,15 +284,15 @@ impl Window {
 
     // this function is called in order to render every window.
     pub fn render(func: Option<fn(&mut App, Rect)>, app: &mut App, render_area: Rect)  {
-        for child in &mut app.root_window.current_render_window().chilren.data {
+        for child in &mut app.root_window.current_render_window().children.data {
             child.rendered = false;
         }
 
         match func {
             Some(f) => f(app, render_area),
             None => (),
-        }
-        
+        };
+
         app.root_window.current_render_window().rendered = true;
     }
 
@@ -285,20 +308,6 @@ impl Window {
         }
         self  // base-case: no children are active
     }
-    
-    /*
-    // gets the current window under & including the self window
-    fn get_current_window(&mut self) -> &mut Window {
-        let ret: &mut Window;
-        loop {
-            for child in self.children.data.iter_mut() {
-                if child.is_active { // only one child will ever be active, so must be under this subtree.
-                    return child.get_current_window();
-                }
-            }
-        }
-        ret
-    }*/
 
     // gets the parent of the current window under & including the self window.
     // must pass None to parent when calling initially & use root_window.
@@ -315,12 +324,12 @@ impl Window {
     fn current_render_window(&mut self) -> &mut Window {
         let mut index = 0;
         for child in &self.children.data {
-            if child.rendered { // only one child will ever be active, so must be under this subtree.
-                return self.children.data[index].get_current_window();
+            if child.rendered {
+                return self.children.data[index].current_render_window();
             }
             index += 1;
         }
-        self  // base-case: no children are active
+        self  // base-case
     }
 
     // returns the root node of a tree of tui nodes.
@@ -393,36 +402,28 @@ impl Window {
         panes.push( (block_console, right_chunks[1]) );
         
         // highlight selected title.
-        let window = app.root_window.get_render_window();
-        if window.is_active {
+        let selected_window_id = app.root_window.get_current_window().id;
+        let window = app.root_window.current_render_window();
+        if window.is_active && window.id == selected_window_id {
             // TODO: do this better somehow?
             let cursor_pos = app.cursor.get_pos() as usize;
             panes[cursor_pos].0 = panes[cursor_pos].0.clone().style( Style::default().fg(Color::Yellow) );
         }
 
-        write_log("after highlight\n");
-
         // render to terminal & recursively render sub trees.
         let mut i = 0;
         for tup in panes.clone() { 
-            write_log("a1\n");
             //app.terminal.get_frame().render_widget(tup.0, tup.1);
-            let func = app.root_window.get_current_window().children.data[i].render_function;
-            write_log("a2\n");
+            let func = app.root_window.current_render_window().children.data[i].render_function;
             Window::render(func, app, tup.1);
-            write_log("a3\n");
             //panes.append(&mut vec);
             i += 1;
         }
-
-        write_log("after recursion\n");
 
         // TODO: fix this, but it does technically work.
         for tup in panes { 
             app.terminal.get_frame().render_widget(tup.0, tup.1);
         }
-
-        write_log("after render\n");
     }
 }
 
