@@ -4,7 +4,7 @@ use std::{
     fs::{File, OpenOptions},
     panic,
     error::Error,
-    sync::atomic::{AtomicU32, Ordering},
+    //sync::atomic::{AtomicU32, Ordering},
 };
 use crossterm::{
     //event::{self, DisableMouseCapture, EnableMouseCapture, Event as CEvent, KeyCode},
@@ -13,20 +13,20 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
 
-use tui::terminal::{Terminal};
+use tui::terminal::{Terminal, Frame};
 use tui::backend::{CrosstermBackend};
-use tui::widgets::{Block, Borders};
+use tui::widgets::{Block, Borders, Widget, StatefulWidget};
 use tui::layout::{Layout, Constraint, Direction, Rect};
 use tui::style::{Style, Color};
 
-
-
 fn main() -> Result<(), Box<dyn Error>> {
-    setup_panic_hook();
-    let mut app = App::new()?;
+    let mut app = App::new();
     app.run()?;
     Ok(())
 }
+
+// ************************************************************************** //
+// debug:
 
 // for testing purposes.
 fn write_log(s: &str) {
@@ -40,75 +40,34 @@ fn write_log(s: &str) {
 // debug messages go to log file.
 fn setup_panic_hook() {
     panic::set_hook(Box::new(|info| {
-        //disable_raw_mode();
-        //execute!(self.terminal.backend_mut(), LeaveAlternateScreen);
-        //self.terminal.show_cursor();
-        //println!("{:?}", info);
         write_log(&format!("{:?}", info));
     }));
 }
 
-// The cursor can intelligently move through the window as long as the items
-// are placed in the correct orientations in the matrix.
-pub struct Cursor {
-    position: u32,
-}
-impl Cursor {
-    pub fn new() -> Cursor {
-        Cursor { position: 0 }
-    }
-
-    pub fn move_left(&mut self, window: &Window) {
-        let width = window.children.width as u32;
-        if (self.position >= 1) && (width != 0) && (self.position % width > 0) {
-            self.position -= 1;
-        }
-    }
-
-    pub fn move_right(&mut self, window: &Window) {
-        let width = window.children.width as u32;
-        let len = window.children.data.len() as u32;
-        if (self.position + 1 < len) && (width != 0) && (self.position % width < (width-1)) {
-            self.position += 1;
-        }
-    }
-
-    pub fn move_up(&mut self, window: &Window) {
-        let width = window.children.width as u32;
-        if self.position >= width {
-            self.position -= width;
-        }
-    }
-
-    pub fn move_down(&mut self, window: &Window) {
-        let width = window.children.width as u32;
-        let len = window.children.data.len() as u32;
-        if self.position + width < len {
-            self.position += width;
-        }
-    }
-
-    pub fn get_pos(&self) -> u32 {
-        self.position
-    }
-
-    pub fn into_window(&mut self) {
-        self.position = 0;
-    }
-    pub fn exit_window(&mut self, last_window: &Window) {
-        self.position = last_window.item;
-    }
-}
+// ************************************************************************** //
+// app controller class
 
 // This structure handles working with terminal for us
 pub struct App {
-    terminal: Terminal<CrosstermBackend<io::Stdout>>,
-    cursor: Cursor,
     should_quit: bool,
-    root_window: Window,
+    windows: Vec<Box<dyn Window>>,
+    root_window: usize,
+    current_window: usize,
 }
+
 impl App {
-    pub fn new() -> Result<App, Box<dyn Error>> {
+    pub fn new() -> App {
+        App {
+            should_quit: false,
+            windows: App::generate_window_tree(),
+            root_window: 0,
+            current_window: 0,
+        }
+    }
+    
+    fn create_terminal() -> Result<Terminal<CrosstermBackend<io::Stdout>>, Box<dyn Error>> {
+        setup_panic_hook();
+
         // setup stdout
         enable_raw_mode()?;
         let mut stdout = stdout();
@@ -118,336 +77,120 @@ impl App {
         let backend = CrosstermBackend::new(stdout);
         let mut terminal = Terminal::new(backend)?;
         terminal.clear()?;
+        Ok(terminal)
+    }
 
-        // give object
-        let root_window = Window::generate_tree();
-        let mut app = App {
-            terminal: terminal,
-            cursor: Cursor::new(),
-            should_quit: false,
-            root_window: root_window,
-        };
-        
-        Ok(app)
+    // TODO: change this from borrowing to giving ownership.
+    #[allow(unused_must_use)]
+    fn drop_terminal(terminal: &mut Terminal<CrosstermBackend<io::Stdout>>) {
+        // clean-up stuff
+        disable_raw_mode();
+        execute!(terminal.backend_mut(), LeaveAlternateScreen);
+        terminal.show_cursor();
+    }
+
+    fn get_current_window(&mut self) -> &mut Box<dyn Window> { // impl Window
+        let index = self.current_window;
+        &mut self.windows[index]
+    }
+
+    fn get_root_window(&mut self) -> &mut Box<dyn Window> {
+        let index = self.root_window;
+        &mut self.windows[index]
     }
 
     // the main draw loop.
     pub fn run(&mut self) -> Result<(), Box<dyn Error>> {
+        // it's important that the terminal is not a property of App.
+        let mut terminal = App::create_terminal()?;
+
         while !self.should_quit {
-            write_log("bef draw\n");
-            self.draw_screen()?;
-            write_log("after draw\n");
+            terminal.draw(
+                |f| self.draw( f, f.size() )
+            )?;
             self.wait_for_event();
         }
-        Ok(())
-    }
-    
-    pub fn draw_screen(&mut self) -> Result<(), io::Error> {
-        // Early resizing allows us to render directly to the frame, then perform
-        // an empty draw call which sets up the buffers for the next draw. 
-        self.terminal.autoresize()?;     
-        self.render_windows(); 
-        write_log("after window render\n");
 
-        self.terminal.draw(|_| {})?;
+        App::drop_terminal(&mut terminal);
         Ok(())
     }
 
-    // return value describes if app should exit.
-    pub fn wait_for_event(&mut self) {
+    fn draw(&mut self, f: &mut Frame<CrosstermBackend<io::Stdout>>, rect: Rect) {
+        self.get_root_window().draw(f, rect);
+    }
+
+    fn wait_for_event(&mut self) {
         // if an Event error occurs, just keep polling.
         let event: Event;
         loop {
             match read() {
                 Ok(e) => { event = e; break; },
-                Err(_) => write_log("an ERROR occured\n"),
+                Err(_) => write_log("ERROR: an event could not be read.\n"),
             };
         }
 
-        write_log("check events\n");
         // a list of all the inputs a user can take.
         match event {
             Event::Key(key_event) => match key_event.code {
-                KeyCode::Char('q') => self.exit_current(),
-                KeyCode::Esc => self.exit_current(),
-                KeyCode::Left => self.cursor.move_left(self.root_window.get_current_window()),
-                KeyCode::Up => self.cursor.move_up(self.root_window.get_current_window()),
-                KeyCode::Right => self.cursor.move_right(self.root_window.get_current_window()),
-                KeyCode::Down => self.cursor.move_down(self.root_window.get_current_window()),
-                KeyCode::Enter => self.enter_current(),
+                KeyCode::Char('q') => self.should_quit = true,
+                KeyCode::Esc => self.current_window = self.get_current_window().exit(),
+                KeyCode::Left => self.get_current_window().move_left(),
+                KeyCode::Up => self.get_current_window().move_up(),
+                KeyCode::Right => self.get_current_window().move_right(),
+                KeyCode::Down => self.get_current_window().move_down(),
+                KeyCode::Enter => self.current_window = self.get_current_window().enter(),
                 _ => (),
             },
             _ => (),
         };
-        write_log("event done\n");
-    }
-
-    pub fn exit_current(&mut self) {
-        let current_window = self.root_window.get_current_window();
-        self.cursor.exit_window(current_window);
-        match self.root_window.get_current_parent(None) {
-            None => self.should_quit = true,
-            Some(_) => {
-                self.root_window.get_current_window().is_active = false; 
-            },
-        };
-    }
-
-    pub fn enter_current(&mut self) {
-        let current_window = self.root_window.get_current_window();
-        let child_id = self.cursor.get_pos() as usize;
-        write_log("entering\n");
-        if current_window.children.data.len() == 0 {
-            current_window.activate();
-        } else {
-            current_window.children.data[child_id].is_active = true;
-            self.cursor.into_window();
-        }
-        write_log("entering2\n");
-    }
-
-    // Will recursively render all sub-windows.
-    //
-    // Since we know the root is always 'not-rendered' between calls, we can take the first non-rendered window and
-    // infer that its children are not-rendered as well. In this way, by reseting the root window to 'rendered = false'
-    // after every time the window is rendered, we can infer which window is currently being rendered in the draw func
-    // by using the `current_render_window()` function. -> otherwise we would have to pass a reference to window with a
-    // mutable reference to app at the same time, which is not allowed >:c 
-    fn render_windows(&mut self) {
-        let window_rect = self.terminal.get_frame().size();
-        let func = self.root_window.render_function;
-        Window::render(func, self, window_rect);
-        self.root_window.rendered = false;
-    }
-}
-impl Drop for App {
-    #[allow(unused_must_use)]
-    fn drop(&mut self) {
-        // clean-up stuff
-        disable_raw_mode();
-        execute!(self.terminal.backend_mut(), LeaveAlternateScreen);
-        self.terminal.show_cursor();
-    }
-}
-
-// for generating unique ids.
-static COUNTER: AtomicU32 = AtomicU32::new(0);
-
-//TODO: window class
-// Window class is like a single item of a tree of Rectangles. Each rectangle has 
-// more rectangles inside of it & optionally attached behaviours.
-// The render area of the root node is `terminal.get_frame().size()`
-pub struct Window {
-    id: u32,
-    item: u32,
-    pub is_active: bool,
-    pub rendered: bool,
-    children: SimpleMatrix<Window>,
-    activate_function: Option<fn()>,  // does this work?
-    render_function: Option<fn(&mut App, Rect)>,
-}
-impl Window {
-    pub fn new( item: u32, 
-                children: SimpleMatrix<Window>,  //<'a> 
-                activate_function: Option<fn()>, 
-                render_function: Option<fn(&mut App, Rect)> ) -> Window {
-        Window {
-            id: Window::new_id(),
-            item,
-            is_active: false,
-            rendered: false,
-            children,
-            activate_function,
-            render_function,
-        }
-    }
-
-    // for generating unique ids.
-    fn new_id() -> u32 { COUNTER.fetch_add(1, Ordering::Relaxed) }
-
-    // currently holds the 1# spot for most ghetto code
-    pub fn placeholder() -> Window {
-        Window::new(
-            0, 
-            SimpleMatrix::new(0, Vec::new()),
-            None,
-            None,
-        )
-    }
-
-    pub fn activate(&self) {
-        match self.activate_function {
-            Some(f) => f(),
-            None => (),
-        };
-    }
-
-    // this function is called in order to render every window.
-    pub fn render(func: Option<fn(&mut App, Rect)>, app: &mut App, render_area: Rect)  {
-        for child in &mut app.root_window.current_render_window().children.data {
-            child.rendered = false;
-        }
-
-        match func {
-            Some(f) => f(app, render_area),
-            None => (),
-        };
-
-        app.root_window.current_render_window().rendered = true;
-    }
-
-    // #2 ghetto
-    // gets the current window under & including the self window
-    fn get_current_window(&mut self) -> &mut Window {
-        let mut index = 0;
-        for child in &self.children.data {
-            if child.is_active { // only one child will ever be active, so must be under this subtree.
-                return self.children.data[index].get_current_window();
-            }
-            index += 1;
-        }
-        self  // base-case: no children are active
-    }
-
-    // gets the parent of the current window under & including the self window.
-    // must pass None to parent when calling initially & use root_window.
-    fn get_current_parent<'a>(&'a self, parent: Option<&'a Window>) -> Option<&'a Window> {
-        for child in &self.children.data {
-            if child.is_active { // only one child will ever be active, so must be under this subtree.
-                return child.get_current_parent( Some(&self) );
-            }
-        }
-        parent  // base-case: no children are active
-    }
-
-    // returns the window currently being rendered
-    fn current_render_window(&mut self) -> &mut Window {
-        let mut index = 0;
-        for child in &self.children.data {
-            if child.rendered {
-                return self.children.data[index].current_render_window();
-            }
-            index += 1;
-        }
-        self  // base-case
     }
 
     // returns the root node of a tree of tui nodes.
-    pub fn generate_tree() -> Window {
-        let nav = Window::new(
-            0, 
-            SimpleMatrix::new(0, Vec::new()),
-            None,
-            None,
-        );
+    pub fn generate_window_tree() -> Vec<Box<dyn Window>> {
+        /*let select = SelectWindow {
+            index: 1,
+            children: Vec::new(),
+        };
 
-        let puzzle = Window::new(
-            1, 
-            SimpleMatrix::new(0, Vec::new()),
-            None,
-            None,
-        );
+        let main = MainWindow {
+            index: 0,
+            children: vec![select],
+        };
 
-        let settings = Window::new(
-            2, 
-            SimpleMatrix::new(0, Vec::new()),
-            None,
-            None,
-        );
-
-        let console = Window::new(
-            3, 
-            SimpleMatrix::new(0, Vec::new()),
-            None,
-            None,
-        );
-        
-        let mut main = Window::new(
-            0, 
-            SimpleMatrix::new(2, vec![nav, puzzle, settings, console]),
-            None, 
-            Some(Window::render_main),
-        );
-
-        main.is_active = true;
-        main
-    }
-
-    pub fn render_main(app: &mut App, rect: Rect) {
-        write_log("doing main render\n");
-        // partition window.
-        let chunks = Layout::default()
-            .direction(Direction::Horizontal)
-            .margin(1)
-            .constraints( [ Constraint::Percentage(40), Constraint::Percentage(60) ].as_ref() )
-            .split(rect);
-        let left_chunks = Layout::default()
-            .direction(Direction::Vertical)
-            .constraints( [ Constraint::Percentage(60), Constraint::Percentage(40) ].as_ref() )
-            .split(chunks[0]);
-        let right_chunks = Layout::default()
-            .direction(Direction::Vertical)
-            .constraints( [ Constraint::Percentage(70), Constraint::Percentage(30) ].as_ref() )
-            .split(chunks[1]);
-
-        // create & style renderable blocks
-        let mut panes: Vec<(Block, Rect)> = Vec::new();
-        let block_select = Block::default().title("Select Puzzle").borders(Borders::ALL);
-        panes.push( (block_select, left_chunks[0]) );
-        let block_puzzle = Block::default().title("Puzzle Area").borders(Borders::ALL);
-        panes.push( (block_puzzle, right_chunks[0]) );
-        let block_settings = Block::default().title("Settings").borders(Borders::ALL);
-        panes.push( (block_settings, left_chunks[1]) );
-        let block_console = Block::default().title("Console").borders(Borders::ALL);
-        panes.push( (block_console, right_chunks[1]) );
-        
-        // highlight selected title.
-        let selected_window_id = app.root_window.get_current_window().id;
-        let window = app.root_window.current_render_window();
-        if window.is_active && window.id == selected_window_id {
-            // TODO: do this better somehow?
-            let cursor_pos = app.cursor.get_pos() as usize;
-            panes[cursor_pos].0 = panes[cursor_pos].0.clone().style( Style::default().fg(Color::Yellow) );
-        }
-
-        // render to terminal & recursively render sub trees.
-        let mut i = 0;
-        for tup in panes.clone() { 
-            //app.terminal.get_frame().render_widget(tup.0, tup.1);
-            let func = app.root_window.current_render_window().children.data[i].render_function;
-            Window::render(func, app, tup.1);
-            //panes.append(&mut vec);
-            i += 1;
-        }
-
-        // TODO: fix this, but it does technically work.
-        for tup in panes { 
-            app.terminal.get_frame().render_widget(tup.0, tup.1);
-        }
+        vec![main, select];*/
+        Vec::new()
     }
 }
 
-pub struct SimpleMatrix<T> {
-    pub width: usize,
-    pub data: Vec<T>,
-} 
-impl<T> SimpleMatrix<T> {
-    pub fn new(width: usize, data: Vec<T>) -> SimpleMatrix<T> {
-        SimpleMatrix {
-            width,
-            data,
-        } 
-    }
-    /*
-    pub fn get(&self, x: usize, y: usize) -> T {
-       self.data[y * self.width + x]
-    }
-    pub fn set(&self, x: usize, y: usize, val: T) {  // TODO: needs mut
-        self.data[y * self.width + x] = val;
-    }
-    */
+// ************************************************************************** //
+// Window stuff
+
+// TODO: get this working w/ rendering.
+pub trait Window {
+    fn draw(&mut self, f: &mut Frame<CrosstermBackend<io::Stdout>>, rect: Rect);
+    //fn select(&mut self, is_selected: bool);
+    fn enter(&mut self) -> usize;  // the return value is the new current window.
+    fn exit(&mut self) -> usize;  // ''
+    fn move_left(&mut self);
+    fn move_right(&mut self);
+    fn move_up(&mut self);
+    fn move_down(&mut self);
 }
 
-// TODO: 
-//       allow the user to look at all the files in the puzzles directory.
-//       
+/*
+pub struct MainWindow {
+    index: usize,
+    children: Vec<usize>,
+}
+impl Window for MainWindow {
+
+}
+
+pub struct SelectWindow {
+    index: usize,
+    children: Vec<usize>,
+}
+impl Window for SelectWindow {
+
+}
+*/
