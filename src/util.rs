@@ -1,78 +1,42 @@
-use tui::widgets::ListState;
+use std::{
+    io,
+    io::Write,
+    fs::{File, OpenOptions},
+    panic,
+};
 
-pub struct SimpleMatrix<T> {
-    pub width: usize,
-    pub data: Vec<T>,
-} 
+use crossterm::execute;
+use crossterm::terminal::{disable_raw_mode, LeaveAlternateScreen};
 
-impl<T> SimpleMatrix<T> {
-    pub fn new(width: usize, data: Vec<T>) -> SimpleMatrix<T> {
-        SimpleMatrix {
-            width,
-            data,
-        } 
-    }
-    /*
-    pub fn get(&self, x: usize, y: usize) -> T {
-       self.data[y * self.width + x]
-    }
-    pub fn set(&mut self, x: usize, y: usize, val: T) {
-        self.data[y * self.width + x] = val;
-    }
-    */
+use tui::terminal::Terminal;
+use tui::backend::CrosstermBackend;
+
+// ************************************************************************** //
+// util & debug code:
+
+// for testing purposes.
+pub fn write_log(s: &str) {
+    let mut file = match OpenOptions::new().append(true).open("log.txt") {
+        Ok(f) => f,
+        Err(_) => File::create("log.txt").expect("logger function failed create D:"),
+    };
+    file.write_all(s.as_bytes()).expect("logger function failed write D:");
 }
 
-/*
-pub struct StatefulList<T> {
-    pub state: ListState,
-    pub items: Vec<T>,
+// debug messages go to log file.
+pub fn setup_panic_hook() {
+    panic::set_hook(Box::new(|info| {
+        write_log(&format!("{:?}\n", info));
+    }));
 }
 
-impl<T> StatefulList<T> {
-    pub fn new() -> StatefulList<T> {
-        StatefulList {
-            state: ListState::default(),
-            items: Vec::new(),
-        }
-    }
-
-    pub fn with_items(items: Vec<T>) -> StatefulList<T> {
-        StatefulList {
-            state: ListState::default(),
-            items,
-        }
-    }
-
-    pub fn next(&mut self) {
-        let i = match self.state.selected() {
-            Some(i) => {
-                if i >= self.items.len() - 1 {
-                    0
-                } else {
-                    i + 1
-                }
-            }
-            None => 0,
-        };
-        self.state.select(Some(i));
-    }
-
-    pub fn previous(&mut self) {
-        let i = match self.state.selected() {
-            Some(i) => {
-                if i == 0 {
-                    self.items.len() - 1
-                } else {
-                    i - 1
-                }
-            }
-            None => 0,
-        };
-        self.state.select(Some(i));
-    }
-
-    pub fn unselect(&mut self) {
-        self.state.select(None);
+// this allows the terminal window to be switched back on panics.
+pub struct SafeTermWrapper(pub Terminal<CrosstermBackend<io::Stdout>>);
+impl Drop for SafeTermWrapper {
+    #[allow(unused_must_use)]
+    fn drop(&mut self) {
+        // for terminal niceness.
+        disable_raw_mode(); 
+        execute!(self.0.backend_mut(), LeaveAlternateScreen);
     }
 }
-*/
