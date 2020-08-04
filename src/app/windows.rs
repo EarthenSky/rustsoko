@@ -6,9 +6,10 @@ use std::cmp::Ordering;
 
 use tui::terminal::Frame;
 use tui::backend::CrosstermBackend;
-use tui::widgets::{Block, Borders, List, ListState, ListItem};
-use tui::layout::{Layout, Constraint, Direction, Rect};
+use tui::widgets::{Block, Borders, List, ListState, ListItem, Paragraph};
+use tui::layout::{Layout, Constraint, Direction, Rect, Alignment};
 use tui::style::{Style, Color};
+use tui::text::Span;
 
 // ************************************************************************** //
 // Window stuff
@@ -64,7 +65,7 @@ impl Window for MainWindow {
             .constraints( [ Constraint::Percentage(70), Constraint::Percentage(30) ].as_ref() )
             .split(chunks[1]);
 
-        vec![ (1, left_chunks[0]) ]
+        vec![ (1, left_chunks[0]), (2, right_chunks[0]) ]
     }
     fn update_rect(&mut self, rect: Rect) {
         self.rect = rect;
@@ -83,12 +84,20 @@ impl Window for MainWindow {
     fn exited(&mut self) { }
     
     fn move_left(&mut self) -> (usize, usize) { 
-        let child = self.children[self.selected_child];
-        (child, child)
+        let old = self.children[self.selected_child];
+        if self.selected_child == 1 {
+            self.selected_child = 0;
+        }
+        let new = self.children[self.selected_child];
+        (old, new)
     }
     fn move_right(&mut self) -> (usize, usize) { 
-        let child = self.children[self.selected_child];
-        (child, child)
+        let old = self.children[self.selected_child];
+        if self.selected_child == 0 {
+            self.selected_child = 1;
+        }
+        let new = self.children[self.selected_child];
+        (old, new)
     }
     fn move_up(&mut self) -> (usize, usize) { 
         let child = self.children[self.selected_child];
@@ -104,21 +113,25 @@ const WINDOW_DO_NOTHING: (usize, usize) = (0, 0);
 pub struct SelectWindow {
     pub index: usize,
     pub is_selected: bool,
+    pub is_active: bool, // represents if the user is in this window.
     pub parent: usize,
     pub state: ListState,
     pub items: Vec<String>,
+    pub selected_item: Option<usize>,
+    pub old_item_name: Option<String>,
+    pub dir_name: String,
     pub rect: Rect,
     //selected_child: usize,
     //children: Vec<usize>,
 }
 impl SelectWindow {
     // TODO: add more information to this / make it reoccurring / add an update button.
-    pub fn init(&mut self) {
+    pub fn load_directory(&mut self) {
         // TODO: this line -> self.items.clear();
         let path = Path::new("./puzzles/");
         let path = match fs::read_dir(path) {
             Ok(dir_read) => {
-                self.items.push( path.to_string_lossy().into_owned() );
+                self.dir_name = path.to_string_lossy().into_owned();
                 for item in dir_read {
                     let item_string = match item {
                         Ok(file_item) => file_item.path().to_string_lossy().into_owned(),
@@ -134,7 +147,7 @@ impl SelectWindow {
         let path = match path {
             Some(path) => match fs::read_dir(path) {
                 Ok(dir_read) => {
-                    self.items.push( path.to_string_lossy().into_owned() );
+                    self.dir_name = path.to_string_lossy().into_owned();
                     for item in dir_read {
                         let item_string = match item {
                             Ok(file_item) => file_item.path().to_string_lossy().into_owned(),
@@ -150,9 +163,10 @@ impl SelectWindow {
         };
         // both dirs empty
         match path {
-            Some(_) => self.items.push("could not find any files at ./puzzles/ or ../../puzzles/".to_string()),
+            Some(_) => self.dir_name = "could not find any files at ./puzzles/ or ../../puzzles/".to_string(),
             None => (),
         };
+        // sort by path length
         self.items.sort_by(|a, b| 
             if a.len() > b.len() {
                 Ordering::Greater
@@ -163,26 +177,64 @@ impl SelectWindow {
             }
         );
     }
+    
+    // TODO: this
+    pub fn get_loaded_puzzle() -> String {
+        "".to_string()
+    }
 }
 impl Window for SelectWindow {
     fn draw(&mut self, f: &mut Frame<CrosstermBackend<io::Stdout>>) {
-        // TODO: set aside one level for a paragraph. -> this paragraph will be the directory name.
-        
-        let mut block_select = Block::default().title("Select Puzzle").borders(Borders::ALL);
-        if self.is_selected {
-            block_select = block_select.style( Style::default().fg(Color::Yellow) );
-        }
+        let separator = Layout::default()
+            .direction(Direction::Vertical)
+            .margin(0)
+            .constraints( [ Constraint::Length(3), Constraint::Min(0) ].as_ref() )
+            .split(self.rect);
 
-        let items: Vec<ListItem> = self.items.iter().map(|item| 
-            ListItem::new(item.as_ref())
-        ).collect();
-        let select_list = List::new(items)
-            .block(block_select)
+        // the block with the bar & directory name
+        let mut select_bar = Block::default().title("Select Puzzle").borders(Borders::ALL);
+        if self.is_selected {
+            select_bar = select_bar.style( Style::default().fg(Color::Yellow) );
+        }
+        let select_bar_text = Paragraph::new( Span::raw(format!("puzzle directory = {}", &self.dir_name)) )
+            .block(select_bar)
+            .style(Style::default().fg(Color::White).bg(Color::Black))
+            .alignment(Alignment::Left);
+        f.render_widget(select_bar_text, separator[0]);
+
+        // the body which holds the list.
+        let mut select_block = Block::default().borders(Borders::ALL);
+        if self.is_selected {
+            select_block = select_block.style( Style::default().fg(Color::Yellow) );
+        }
+        let items: Vec<ListItem> = match self.selected_item {
+            Some(item_val) => {
+                self.items.iter().enumerate().map(|(i, item)|
+                    if i == item_val {
+                        ListItem::new( item.as_ref() )
+                            .style(Style::default().fg(Color::LightGreen))
+                    } else {
+                        ListItem::new(item.as_ref())
+                    }
+                ).collect()
+            },
+            None => {
+                self.items.iter().map(|item|
+                    ListItem::new(item.as_ref())
+                ).collect()
+            },
+        };
+        let mut select_list = List::new(items)
+            .block(select_block)
             .style(Style::default().fg(Color::White))
             .highlight_style(Style::default().fg(Color::Yellow))
             .highlight_symbol("> ");
 
-        f.render_stateful_widget(select_list, self.rect, &mut self.state);
+        if !self.is_active {
+            select_list = select_list.highlight_style( Style::default().fg(Color::LightGreen) );
+        }
+
+        f.render_stateful_widget(select_list, separator[1], &mut self.state);
     }
     fn size_update(&self) -> Vec<(usize, Rect)> {
         Vec::new()
@@ -194,19 +246,37 @@ impl Window for SelectWindow {
     fn select(&mut self, is_selected: bool) {
         self.is_selected = is_selected;
     }
+    // 'selects' the current puzzle when doing this option.
     fn enter(&mut self) -> Option<usize> {
-        // TODO: 'select' the current puzzle when doing this option.
+        match &self.old_item_name {
+            Some(s) => match self.selected_item {
+                Some(old_item) => self.items[old_item] = s.clone(),
+                None => (), // this will never get here
+            },
+            None => (),
+        };
+        self.selected_item = self.state.selected().clone();  // update select id
+        match self.selected_item {
+            Some(new_item) => {
+                self.old_item_name = Some(self.items[new_item].clone());  // save newly selected item string
+                self.items[new_item].push_str(" (selected)");  // update new string
+            },
+            None => {
+                self.old_item_name = None;
+            },
+        };
         None
     }
     fn exit(&mut self) -> Option<usize> {
         Some(self.parent)
     }
     fn entered(&mut self) {
-        self.state.select( Some(0) );
+        self.is_active = true;
+        self.state.select( self.selected_item() );
     }
     fn exited(&mut self) {
-        // TODO: if a state is ever 'entered,' then don't unselect it.
-        self.state.select( None );
+        self.is_active = false;
+        self.state.select( self.selected_item.clone() );
     } 
     
     fn move_left(&mut self) -> (usize, usize) { WINDOW_DO_NOTHING }
@@ -239,4 +309,70 @@ impl Window for SelectWindow {
         self.state.select( Some(item) );
         (self.index, 0)
     }
+}
+
+// TODO: may need to implement a pre-draw function which gets called so that this class
+// can be edited by the SelectWindow class --> or at least so that these classes can communicate the puzzle string.
+pub struct PuzzleWindow {
+    pub index: usize,
+    pub is_selected: bool,
+    pub parent: usize,
+    pub rect: Rect,
+    //pub puzzle: String,  // stores the puzzle string which can be scaled when drawing.
+    //selected_child: usize,
+    //children: Vec<usize>,
+}
+impl PuzzleWindow {
+    pub fn _init(&mut self) {
+        //TODO: do or remove this.
+    }
+}
+impl Window for PuzzleWindow {
+    // todo: do this.
+    fn draw(&mut self, f: &mut Frame<CrosstermBackend<io::Stdout>>) {
+        let separator = Layout::default()
+            .direction(Direction::Vertical)
+            .margin(0)
+            .constraints( [ Constraint::Min(0), Constraint::Length(3) ].as_ref() )
+            .split(self.rect);
+        
+        let mut puzzle_box = Block::default().title("Select Puzzle").borders(Borders::ALL);
+        if self.is_selected {
+            puzzle_box = puzzle_box.style( Style::default().fg(Color::Yellow) );
+        }
+        let mut puzzle_box_bar = Block::default().borders(Borders::ALL);
+        if self.is_selected {
+            puzzle_box_bar = puzzle_box_bar.style( Style::default().fg(Color::Yellow) );
+        }
+
+        f.render_widget(puzzle_box, separator[0]);
+        f.render_widget(puzzle_box_bar, separator[1]);
+    }
+    fn size_update(&self) -> Vec<(usize, Rect)> {
+        Vec::new()
+    }
+    fn update_rect(&mut self, rect: Rect) {
+        self.rect = rect;
+    }
+    
+    fn select(&mut self, is_selected: bool) {
+        self.is_selected = is_selected;
+    }
+    fn enter(&mut self) -> Option<usize> {
+        // TODO: 'select' the current puzzle when doing this option.
+        None
+    }
+    fn exit(&mut self) -> Option<usize> {
+        Some(self.parent)
+    }
+    fn entered(&mut self) {
+    }
+    fn exited(&mut self) {
+    } 
+    
+    // todo: move internal position when in this part.
+    fn move_left(&mut self) -> (usize, usize) { WINDOW_DO_NOTHING }
+    fn move_right(&mut self) -> (usize, usize) { WINDOW_DO_NOTHING }
+    fn move_up(&mut self) -> (usize, usize) { WINDOW_DO_NOTHING }
+    fn move_down(&mut self) -> (usize, usize) { WINDOW_DO_NOTHING }
 }
