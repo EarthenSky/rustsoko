@@ -272,7 +272,7 @@ impl Window for SelectWindow {
     }
     fn entered(&mut self) {
         self.is_active = true;
-        self.state.select( self.selected_item() );
+        self.state.select( self.selected_item );
     }
     fn exited(&mut self) {
         self.is_active = false;
