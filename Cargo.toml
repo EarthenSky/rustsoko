@@ -1,5 +1,5 @@
 [package]
-name = "cmpt310-sokoban-solver"
+name = "sokosolve"
 version = "0.1.0"
 authors = ["geb"]
 edition = "2018"
@@ -8,5 +8,7 @@ edition = "2018"
 
 [dependencies]
 rand = "0.7"
-crossterm = "0.17"
-tui = { version = "0.10", default-features = false, features = ['crossterm'] }
+clap = "2.33.1"
+# for gui
+# crossterm = "0.17"
+# tui = { version = "0.10", default-features = false, features = ['crossterm'] }
