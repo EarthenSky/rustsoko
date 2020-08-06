@@ -71,6 +71,7 @@ pub fn read_puzzle(filepath: &str, print_puzzle: bool) -> TileMatrix {
                 index = line_number * puzzle_width;
                 index -= 1;
             },
+            '\r' => index -= 1,
             _ => {
                 println!("Error: puzzle file is malformed.\nreason: invalid character in puzzle file, \"{}\".\npuzzle can only contain the characters \"#@+$*. \"", ch);
                 process::exit(1);
@@ -84,13 +85,13 @@ pub fn read_puzzle(filepath: &str, print_puzzle: bool) -> TileMatrix {
         process::exit(1);
     }
 
-    // TODO: print numbers with string.
-    if print_puzzle {
-        println!("Successfully loaded the following puzzle: \n{}", puzzle_string);
-    }
-
-    TileMatrix {
+    let puzzle = TileMatrix {
         width: puzzle_width, 
         data: tile_vec,
+    };
+    if print_puzzle {
+        println!("Successfully loaded the following puzzle:");
+        puzzle.print();
     }
+    puzzle
 }

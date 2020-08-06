@@ -20,7 +20,7 @@ pub fn manhattan_distance(p1: Point2D, p2: Point2D) -> usize {
 pub fn astar_pathfind(puzzle_map: &TileMatrix, initial_action: Action, 
                       start_point: Point2D, goal_point: Point2D) -> Vec<Action> {
     // pass
-    Vec::new()
+    vec![initial_action]  // todo: put moves before initial_action.
 }
 
 /*

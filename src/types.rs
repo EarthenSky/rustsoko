@@ -24,6 +24,34 @@ impl TileMatrix {
     pub fn set(&mut self, p: Point2D, val: Tile) {
         self.data[p.y * self.width + p.x] = val;
     }
+    pub fn print(&self) {
+        print!("  ");
+        for i in 0..self.width {
+            if i < 10 {
+                print!("{}", i);
+            }
+        }
+        print!("\n");
+        for (i, tile) in self.data.iter().enumerate() {
+            if i % self.width == 0 {
+                if i / self.width >= 10 {
+                    print!("\n  ");
+                }
+                print!("\n{} ", i / self.width);
+            }
+            print!("{}", match tile {
+                Tile::Wall => '#',
+                Tile::Player => '@',
+                Tile::PlayerGoal => '+',
+                Tile::Crate => '$',
+                Tile::CrateGoal => '*',
+                Tile::Goal => '.',
+                Tile::Floor => ' ',
+            });
+            
+        }
+        print!("\n\n");
+    }
 }
 
 // Simple point struct

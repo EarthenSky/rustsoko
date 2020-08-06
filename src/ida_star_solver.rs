@@ -39,13 +39,24 @@ enum Output {
     Value(usize),
 }
 
+// TODO: this
+pub struct RunDat {
+    pub nodes_checked: usize,
+    pub nodes_generated: usize,
+}
+impl RunDat {
+    pub fn print(&self) {
+        println!("nodes checked = {}", self.nodes_checked);
+        println!("nodes checked = {}", self.nodes_generated);
+    }
+}
+
 #[derive(Clone)]
 pub struct Node {
     pub actions: Vec<Action>,
     pub map: TileMatrix,
     pub crates: Vec<Point2D>,
     pub player: Point2D,
-    //pub walkable: Vec<Point2D>,
     pub g: usize,  // this is number of pushes
     pub h: usize,  // for storing heuristic(node)
     pub moves: usize,  // used as a secondary sorting element.
@@ -173,6 +184,10 @@ impl IDAStarSolver {
         let mut walkable: HashSet<Point2D> = HashSet::new();
         walkable.insert(node.player.clone());
         node.find_walkable_spaces(node.player, &mut walkable);
+        for p in &walkable {
+            print!("xy:{},{}  ", p.x, p.y);
+        }
+        println!("\ndone walk ##########");
 
         // find all the actions the player can take.
         let mut succ_vec: Vec<Node> = Vec::new();
@@ -182,32 +197,38 @@ impl IDAStarSolver {
 
             // TODO: don't make Point2Ds for efficiency -> map.get_pos(x, y)
             let adjacent: Vec<(Action, Point2D, Point2D, Tile, bool)> = vec![ 
-                (Action::PushDown, Point2D::new(x+1, y), Point2D::new(x-1, y)), 
-                (Action::PushUp, Point2D::new(x-1, y), Point2D::new(x+1, y)), 
-                (Action::PushRight, Point2D::new(x, y+1), Point2D::new(x, y-1)), 
-                (Action::PushLeft, Point2D::new(x, y-1), Point2D::new(x, y+1)) 
+                (Action::PushRight, Point2D::new(x+1, y), Point2D::new(x-1, y)), 
+                (Action::PushLeft, Point2D::new(x-1, y), Point2D::new(x+1, y)), 
+                (Action::PushDown, Point2D::new(x, y+1), Point2D::new(x, y-1)), 
+                (Action::PushUp, Point2D::new(x, y-1), Point2D::new(x, y+1)) 
             ].iter().map( |tup| (tup.0, tup.1, tup.2, node.map.get(tup.1), walkable.contains(&tup.2)) ).collect();
 
-            for (action, crate_end, push_start, move_tile, can_walk) in adjacent {
+            for (action, crate_end, push_start, end_tile, can_walk) in adjacent {
                 if !can_walk {
                     continue;
                 }
 
                 // TODO: put all the internals into the make_new() function.
-                match move_tile {
+                match end_tile {
                     Tile::Wall => (),
                     Tile::Crate => (),
                     Tile::CrateGoal => (),
                     _ => {
-                        // create a new 
+                        // create new sets of map & crate data. 
                         let mut new_map = node.map.clone();
                         let mut new_crates = node.crates.clone();
-                        match crate_tile {
+                        
+                        match node.map.get(node.player) { // update the position the player leaves from.
+                            Tile::Player => new_map.set(node.player, Tile::Floor),
+                            Tile::PlayerGoal => new_map.set(node.player, Tile::Goal),
+                            _ => (),
+                        }
+                        match crate_tile {  // update the position where the player ends up
                             Tile::Crate => new_map.set(*crate_pos, Tile::Player),
                             Tile::CrateGoal => new_map.set(*crate_pos, Tile::PlayerGoal),
                             _ => (),
                         }
-                        match move_tile {
+                        match end_tile {  // update position where the crate ends up
                             Tile::Goal => new_map.set(crate_end, Tile::CrateGoal),
                             Tile::PlayerGoal => new_map.set(crate_end, Tile::CrateGoal),
                             _ => new_map.set(crate_end, Tile::Crate),
@@ -219,8 +240,10 @@ impl IDAStarSolver {
                         let actions: Vec<Action> = util::astar_pathfind(&new_map, action, node.player, push_start);
                         let moves: usize = 1; //node.moves + actions.len() - 1;
                         
-                        // every push costs 1
+                        // This updates the position of the moved crate.
                         new_crates[i] = crate_end.clone();
+                        
+                        // every push costs 1
                         let mut new_node = Node::make_new(
                             actions, new_map, new_crates, crate_pos.clone(), node.g + 1, moves
                         );
@@ -244,6 +267,7 @@ impl IDAStarSolver {
                 Ordering::Equal
             }
         );
+        println!("______ found succ!");
         succ_vec
     }  
 
@@ -256,8 +280,8 @@ impl IDAStarSolver {
                 Output::Found => return (self.path.clone(), bound),
                 Output::Value(new_f) => {
                     if new_f == std::usize::MAX {
+                        println!("### No Solution ###");
                         return (Vec::new(), 0);
-                        println!("no solution");
                     }
                     bound = new_f;
                     println!("bound updated {}", bound);
@@ -271,6 +295,9 @@ impl IDAStarSolver {
         let node: &Node = self.path.last().unwrap();  // End node will allways exist.
         let f_cost = node.g + node.h;  // estimated cost of the cheapest path (root..node..goal)
         
+        println!("trying:"); 
+        node.map.print();
+        println!("player position -> xy:{},{}", &node.player.x, &node.player.y);
         // base cases
         if f_cost > bound { 
             return Output::Value(f_cost);  // end current dls
@@ -312,10 +339,17 @@ impl IDAStarSolver {
     // currently just returns solution as string.
     pub fn solve(&mut self) -> String {
         let (mut path, cost) = self.ida_star();
+        println!("path cost: {}", cost);
+        println!("path len: {}", path.len());
+        //println!("path ac0: {}", path[0].actions.len());
+        //println!("path ac1: {}", path[1].actions.len());
 
         // convert path of nodes to actions, then string.
         let mut action_path: Vec<Action> = Vec::new();
-        path.iter_mut().map(|node| action_path.append(&mut node.actions));
+        for node in &mut path {
+            action_path.append(&mut node.actions);
+        }
+        println!("path acpl: {}", action_path.len());
         Action::to_string(&action_path)
     }
 
