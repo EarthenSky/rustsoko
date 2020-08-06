@@ -1,22 +1,26 @@
 extern crate clap;
 use clap::{Arg, ArgGroup, App, SubCommand, AppSettings};
 
+mod util;
 mod types;
 mod level_reader;
+mod ida_star_solver;
+
+use ida_star_solver::{IDAStarSolver, heuristic};
 
 fn main() {
     // init cli input method
     let matches = App::new("CMPT 310 Sokoban Solver -- sokosolver")
         .version("1.0")
-        .author("Geb")
+        .author("EarthenSky - Geb")
         .about("Implements various push optimal solving methods for sokoban puzzle")
         .setting(AppSettings::SubcommandRequired)
         .setting(AppSettings::UnifiedHelpMessage)
         .setting(AppSettings::VersionlessSubcommands)
-        .arg(Arg::with_name("debug")
-            .short("d")
-            .long("debug")
-            .help("Shows debug information ## TODO"))
+        .arg(Arg::with_name("silent")
+            .short("s")
+            .long("silent")
+            .help("Only reuturns runtime statistics in csv format. ## TODO: this"))
         .arg(Arg::with_name("INPUT")
             .required(true)
             .index(1)
@@ -33,17 +37,24 @@ fn main() {
         )
         .get_matches();
 
+    let is_silent = matches.is_present("silent");
     let filepath = matches.value_of("INPUT").unwrap();
-    let puzzle = level_reader::read_puzzle(filepath, true);
+    let puzzle = level_reader::read_puzzle(filepath, !is_silent);
 
     if let Some(matches) = matches.subcommand_matches("idas") {
-        // TODO: init IDA*
+        let mut solver: Option<IDAStarSolver> = None;
 
-        // configure heuristic
+        // clap assures that there will be exactly one heuristic.
         if matches.is_present("closest-box") {
-            // TODO: add the cloest-box heuristic
+            // add the cloest-box heuristic
+            solver = Some(IDAStarSolver::new(puzzle, heuristic::closest_box));
+        }
 
+        if let Some(mut s) = solver {
+            let solution = s.solve();
+            println!("Done!\nOptimal solution is: {}", solution);
+        } else {
+            println!("Command Error: A heuristic must be stated. ex: --closest-box");
         }
     }    
-
 }
