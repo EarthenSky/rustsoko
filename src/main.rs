@@ -47,12 +47,15 @@ fn main() {
         // clap assures that there will be exactly one heuristic.
         if matches.is_present("closest-box") {
             // add the cloest-box heuristic
-            solver = Some(IDAStarSolver::new(puzzle, heuristic::closest_box));
+            solver = Some(IDAStarSolver::new(puzzle, heuristic::closest_box, !is_silent));
         }
 
         if let Some(mut s) = solver {
             let solution = s.solve();
-            println!("Done!\nOptimal solution is: {}", solution);
+            if !is_silent {
+                print!("Optimal solution is: ");
+            }
+            println!("{}", solution);
         } else {
             println!("Command Error: A heuristic must be stated. ex: --closest-box");
         }

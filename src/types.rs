@@ -67,8 +67,16 @@ impl Point2D {
     pub fn pos(&self) -> (usize, usize) {
         (self.x, self.y)
     }
+    pub fn from(&self, action: Action) -> Point2D {
+        match action {
+            Action::Up => Point2D::new(self.x, self.y - 1),
+            Action::Down => Point2D::new(self.x, self.y + 1),
+            Action::Left => Point2D::new(self.x - 1, self.y),
+            Action::Right => Point2D::new(self.x + 1, self.y),
+            _ => self.clone(),
+        }
+    }
 }
-//impl Eq for ShouldBeEq {}
 
 #[derive(Copy, Clone)]
 pub enum Action {
@@ -99,5 +107,47 @@ impl Action {
             }
         }
         s
+    }
+
+    // inverse of no move is no move.
+    pub fn inverse(&self) -> Action {
+        match self {
+            Action::Up => Action::Down,
+            Action::Down => Action::Up,
+            Action::Left => Action::Right,
+            Action::Right => Action::Left,
+            Action::PushUp => Action::PushDown,
+            Action::PushDown => Action::PushUp,
+            Action::PushLeft => Action::PushRight,
+            Action::PushRight => Action::PushLeft,
+            Action::NoMove => Action::NoMove,
+        }
+    }
+}
+
+pub enum Output {
+    Found,
+    Value(usize),
+}
+
+// This structure stores data about the analysis.
+pub struct RunDat {
+    pub nodes_checked: usize,
+    pub nodes_generated: usize,
+}
+impl RunDat {
+    pub fn new() -> RunDat {
+        RunDat {
+            nodes_checked: 0,
+            nodes_generated: 0,
+        }
+    }
+
+    pub fn print(&self) {
+        println!("----------");
+        println!("Rundata:");
+        println!("nodes checked = {}", self.nodes_checked);
+        println!("nodes generated = {}", self.nodes_generated);
+        println!("----------");
     }
 }

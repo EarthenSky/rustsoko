@@ -27,7 +27,7 @@ pub fn read_puzzle(filepath: &str, print_puzzle: bool) -> TileMatrix {
     loop {
         match puzzle_string[beg_pos..].find('\n') {
             Some(v) => {
-                beg_pos += (v + 1);
+                beg_pos += v + 1;
                 if v > puzzle_width {
                     puzzle_width = v;
                 }
@@ -57,7 +57,10 @@ pub fn read_puzzle(filepath: &str, print_puzzle: bool) -> TileMatrix {
                 tile_vec.push(Tile::Player); 
                 player_count += 1; 
             },
-            '+' => tile_vec.push(Tile::PlayerGoal),
+            '+' => {
+                tile_vec.push(Tile::PlayerGoal); 
+                player_count += 1; 
+            },
             '$' => tile_vec.push(Tile::Crate),
             '*' => tile_vec.push(Tile::CrateGoal),
             '.' => tile_vec.push(Tile::Goal),

@@ -9,6 +9,7 @@ edition = "2018"
 [dependencies]
 rand = "0.7"
 clap = "2.33.1"
+priority-queue = "1.0.0"
 # for gui
 # crossterm = "0.17"
 # tui = { version = "0.10", default-features = false, features = ['crossterm'] }

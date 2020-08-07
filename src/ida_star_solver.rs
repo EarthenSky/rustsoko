@@ -4,7 +4,7 @@ use std::hash::{Hash, Hasher};
 use std::collections::HashSet;
 use std::cmp::Ordering;
 
-use crate::types::{Tile, Point2D, TileMatrix, Action};
+use crate::types::{Tile, Point2D, TileMatrix, Action, Output, RunDat};
 use crate::util;
 
 // Desc:
@@ -30,24 +30,6 @@ pub mod heuristic {
             distance += min;
         }
         distance
-    }
-}
-
-// TODO: move to types.
-enum Output {
-    Found,
-    Value(usize),
-}
-
-// TODO: this
-pub struct RunDat {
-    pub nodes_checked: usize,
-    pub nodes_generated: usize,
-}
-impl RunDat {
-    pub fn print(&self) {
-        println!("nodes checked = {}", self.nodes_checked);
-        println!("nodes checked = {}", self.nodes_generated);
     }
 }
 
@@ -115,14 +97,16 @@ impl Node {
 }
 
 pub struct IDAStarSolver {
+    debug: bool,
+    rundat: RunDat,
     goals: Vec<Point2D>,
     path: Vec<Node>,  // current search path (acts like a stack)
     heuristic: fn(&IDAStarSolver, &Node) -> usize,  // estimated cost of the cheapest path (node..goal)
 }
 impl IDAStarSolver {
-    pub fn new(puzzle: TileMatrix, heuristic: fn(&IDAStarSolver, &Node) -> usize) -> IDAStarSolver {
+    pub fn new(puzzle: TileMatrix, heuristic: fn(&IDAStarSolver, &Node) -> usize, debug: bool) -> IDAStarSolver {
         // remove static pieces from the puzzle.
-        let map: TileMatrix = TileMatrix { width: puzzle.width, data: Vec::new(), };
+        let map: TileMatrix = TileMatrix { width: puzzle.width, data: Vec::new() };
         let mut goals: Vec<Point2D> = Vec::new();
         let mut crates: Vec<Point2D> = Vec::new();
         let mut player: Option<Point2D> = None;
@@ -157,7 +141,7 @@ impl IDAStarSolver {
         path.push(root_node);
         
         let mut solver = IDAStarSolver {
-            goals, path, heuristic
+            debug, rundat: RunDat::new(), goals, path, heuristic 
         };
         solver.path[0].h = (solver.heuristic)(&solver, &solver.path[0]); 
         solver
@@ -179,15 +163,17 @@ impl IDAStarSolver {
     // Node expanding function, expand nodes ordered by g + h(node). Additionally, there is a secondary value which is
     // used to break ties.
     // Step cost is updated in here.
-    fn successors(&self, node: &Node) -> Vec<Node> {
+    fn successors(&mut self) -> Vec<Node> {
+        let node: &Node = self.path.last().unwrap();
+
         // find nodes player can access.
         let mut walkable: HashSet<Point2D> = HashSet::new();
         walkable.insert(node.player.clone());
         node.find_walkable_spaces(node.player, &mut walkable);
+        /*
         for p in &walkable {
             print!("xy:{},{}  ", p.x, p.y);
-        }
-        println!("\ndone walk ##########");
+        }*/
 
         // find all the actions the player can take.
         let mut succ_vec: Vec<Node> = Vec::new();
@@ -195,7 +181,6 @@ impl IDAStarSolver {
             let (x, y) = crate_pos.pos();
             let crate_tile = node.map.get(*crate_pos);
 
-            // TODO: don't make Point2Ds for efficiency -> map.get_pos(x, y)
             let adjacent: Vec<(Action, Point2D, Point2D, Tile, bool)> = vec![ 
                 (Action::PushRight, Point2D::new(x+1, y), Point2D::new(x-1, y)), 
                 (Action::PushLeft, Point2D::new(x-1, y), Point2D::new(x+1, y)), 
@@ -217,7 +202,7 @@ impl IDAStarSolver {
                         // create new sets of map & crate data. 
                         let mut new_map = node.map.clone();
                         let mut new_crates = node.crates.clone();
-                        
+
                         match node.map.get(node.player) { // update the position the player leaves from.
                             Tile::Player => new_map.set(node.player, Tile::Floor),
                             Tile::PlayerGoal => new_map.set(node.player, Tile::Goal),
@@ -237,13 +222,14 @@ impl IDAStarSolver {
                         // TODO: do A* for pathfinding to determine moves needed.
                         // Using A* is better than IDA* here becase the puzzle is a lot smaller so we can store
                         // enough nodes in memory. A* is also faster than IDA* because of its memory constraints.
-                        let actions: Vec<Action> = util::astar_pathfind(&new_map, action, node.player, push_start);
-                        let moves: usize = 1; //node.moves + actions.len() - 1;
+                        let actions: Vec<Action> = util::astar_pathfind(&node.map, action, node.player, push_start);
+                        let moves: usize = node.moves + actions.len() - 1;
                         
                         // This updates the position of the moved crate.
                         new_crates[i] = crate_end.clone();
                         
                         // every push costs 1
+                        self.rundat.nodes_generated += 1;
                         let mut new_node = Node::make_new(
                             actions, new_map, new_crates, crate_pos.clone(), node.g + 1, moves
                         );
@@ -267,7 +253,6 @@ impl IDAStarSolver {
                 Ordering::Equal
             }
         );
-        println!("______ found succ!");
         succ_vec
     }  
 
@@ -284,7 +269,9 @@ impl IDAStarSolver {
                         return (Vec::new(), 0);
                     }
                     bound = new_f;
-                    println!("bound updated {}", bound);
+                    if self.debug {
+                        println!("bound updated {}", bound);
+                    }
                 }
             }
         }
@@ -292,12 +279,19 @@ impl IDAStarSolver {
 
     // adapted from https://en.wikipedia.org/wiki/Iterative_deepening_A*
     fn search(&mut self, bound: usize) -> Output {
-        let node: &Node = self.path.last().unwrap();  // End node will allways exist.
+        let node: &Node = self.path.last().unwrap();  // End node will always exist.
         let f_cost = node.g + node.h;  // estimated cost of the cheapest path (root..node..goal)
         
-        println!("trying:"); 
-        node.map.print();
-        println!("player position -> xy:{},{}", &node.player.x, &node.player.y);
+        /*
+            println!("-------------------------------"); 
+            println!("trying:");
+            node.map.print();
+            println!("player position -> xy:{},{}", &node.player.x, &node.player.y);
+            println!("-------------------------------"); 
+        */
+        
+        self.rundat.nodes_checked += 1;
+
         // base cases
         if f_cost > bound { 
             return Output::Value(f_cost);  // end current dls
@@ -306,7 +300,7 @@ impl IDAStarSolver {
         }
 
         let mut min: usize = std::usize::MAX; // infinity
-        for succ in self.successors(node) {
+        for succ in self.successors() {
             // if by chance there is a hash collision, the worst that will happen is a small
             // performance hit. However this is extremely unlikely so its all good.
             let mut is_duplicate = false;
@@ -338,18 +332,27 @@ impl IDAStarSolver {
 
     // currently just returns solution as string.
     pub fn solve(&mut self) -> String {
+        // run ida_star on the puzzle.
         let (mut path, cost) = self.ida_star();
-        println!("path cost: {}", cost);
-        println!("path len: {}", path.len());
-        //println!("path ac0: {}", path[0].actions.len());
-        //println!("path ac1: {}", path[1].actions.len());
+        if self.debug {
+            println!("-------- Stats: --------");
+            println!("path cost: {}", cost);
+            println!("path len: {} // num pushes + 1", path.len());
+            self.rundat.print();
+        }
 
         // convert path of nodes to actions, then string.
         let mut action_path: Vec<Action> = Vec::new();
         for node in &mut path {
             action_path.append(&mut node.actions);
+            //if self.debug {
+            //    node.map.print();
+            //}
         }
-        println!("path acpl: {}", action_path.len());
+
+        if self.debug {
+            println!("action path len: {} // num actions including first 'none-action'", action_path.len());
+        }
         Action::to_string(&action_path)
     }
 
