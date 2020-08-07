@@ -1,3 +1,5 @@
+use std::fs::File;
+
 extern crate clap;
 use clap::{Arg, ArgGroup, App, SubCommand, AppSettings};
 
@@ -28,6 +30,9 @@ fn main() {
         .subcommand(
             SubCommand::with_name("idas")
             .about("Uses the IDA* algorithm to do a tree search on the problem")
+            .arg(Arg::with_name("profile")
+                .long("profile")
+                .help("Runs the given search through a profiler and returns a flamegraph."))
             .arg(Arg::with_name("closest-box")
                 .long("closest-box")
                 .help("This heuristic is the distance from the closest box to the goal. It is admissible."))
@@ -50,14 +55,36 @@ fn main() {
             solver = Some(IDAStarSolver::new(puzzle, heuristic::closest_box, !is_silent));
         }
 
-        if let Some(mut s) = solver {
-            let solution = s.solve();
-            if !is_silent {
-                print!("Optimal solution is: ");
+        if matches.is_present("profile") {
+            // Profiling execution
+            let guard = pprof::ProfilerGuard::new(100).unwrap();
+            if let Some(mut s) = solver {
+                let solution = s.solve();
+                if !is_silent {
+                    print!("Optimal solution is: ");
+                }
+                println!("{}", solution);
+            } else {
+                println!("Command Error: A heuristic must be stated. ex: --closest-box");
             }
-            println!("{}", solution);
+            if let Ok(report) = guard.report().build() {
+                let file = File::create("flamegraph.svg").unwrap();
+                report.flamegraph(file).unwrap();
+
+                println!("report: {}", &report);
+            };
+
         } else {
-            println!("Command Error: A heuristic must be stated. ex: --closest-box");
+            // Regular execution
+            if let Some(mut s) = solver {
+                let solution = s.solve();
+                if !is_silent {
+                    print!("Optimal solution is: ");
+                }
+                println!("{}", solution);
+            } else {
+                println!("Command Error: A heuristic must be stated. ex: --closest-box");
+            }
         }
     }    
 }

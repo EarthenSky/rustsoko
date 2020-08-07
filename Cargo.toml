@@ -10,6 +10,7 @@ edition = "2018"
 rand = "0.7"
 clap = "2.33.1"
 priority-queue = "1.0.0"
+pprof = { version = "0.3.18", features = ["flamegraph"] } # for DEBUG profiling
 # for gui
 # crossterm = "0.17"
 # tui = { version = "0.10", default-features = false, features = ['crossterm'] }
