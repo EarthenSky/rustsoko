@@ -8,6 +8,7 @@ edition = "2018"
 
 [dependencies]
 rand = "0.7"
+bit-vec = "0.6.2"
 clap = "2.33.1"
 priority-queue = "1.0.0"
 pprof = { version = "0.3.18", features = ["flamegraph"] } # for DEBUG profiling

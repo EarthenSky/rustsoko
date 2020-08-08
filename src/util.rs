@@ -41,7 +41,6 @@ fn reconstruct_path(came_from: &HashMap<Point2D, Action>, goal: Point2D) -> Vec<
     total_path
 }
 
-// TODO: remove fscore thing.
 // A* finds a path from start to goal.
 // h is the heuristic function. h(n) estimates the cost to reach goal from node n.
 fn a_star(puzzle_map: &TileMatrix, start: Point2D, goal: Point2D, h: fn(Point2D, Point2D) -> usize) -> Vec<Action> {
@@ -71,7 +70,7 @@ fn a_star(puzzle_map: &TileMatrix, start: Point2D, goal: Point2D, h: fn(Point2D,
         for action in neighbors {
             let neighbor_point = current.from(action);
 
-            // prune nodes which are not walkable.
+            // prune nodes which are not walkable. -> player nodes are considered walkable.
             match puzzle_map.get(neighbor_point) {
                 Tile::Wall => continue,
                 Tile::Crate => continue,

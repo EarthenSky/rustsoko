@@ -1,3 +1,5 @@
+use bit_vec::BitVec;
+
 #[derive(Copy, Clone)]
 pub enum Tile {
     Wall,
@@ -23,6 +25,43 @@ impl TileMatrix {
     }
     pub fn set(&mut self, p: Point2D, val: Tile) {
         self.data[p.y * self.width + p.x] = val;
+    }
+    pub fn apply_action_and_move(&mut self, action: Action, crate_start: Point2D, old_map: &TileMatrix, inital_player: Point2D) {
+        let crate_end = crate_start.from(action);
+        match old_map.get(inital_player) { // update the position the player leaves from.
+            Tile::Player => self.set(inital_player, Tile::Floor),
+            Tile::PlayerGoal => self.set(inital_player, Tile::Goal),
+            _ => (),
+        }
+        match self.get(crate_start) {  // update the position where the player ends up
+            Tile::Crate => self.set(crate_start, Tile::Player),
+            Tile::CrateGoal => self.set(crate_start, Tile::PlayerGoal),
+            _ => (),
+        }
+        match self.get(crate_end) {  // update position where the crate ends up
+            Tile::Goal => self.set(crate_end, Tile::CrateGoal),
+            Tile::PlayerGoal => self.set(crate_end, Tile::CrateGoal),
+            _ => self.set(crate_end, Tile::Crate),
+        }
+    }
+    pub fn undo_action(&mut self, action: Action, player_start: Point2D) {
+        let empty_pos = player_start.from(action.inverse());
+        let crate_start = player_start.from(action);
+        match self.get(empty_pos) { // update the position the player leaves from.
+            Tile::Floor => self.set(empty_pos, Tile::Player),
+            Tile::Goal => self.set(empty_pos, Tile::PlayerGoal),
+            _ => (),
+        }
+        match self.get(player_start) {  // update the position where the player ends up
+            Tile::Player  => self.set(player_start, Tile::Crate),
+            Tile::PlayerGoal  => self.set(player_start, Tile::CrateGoal),
+            _ => (),
+        }
+        match self.get(crate_start) {  // update position where the crate ends up
+            Tile::Crate => self.set(crate_start, Tile::Floor),
+            Tile::CrateGoal => self.set(crate_start, Tile::Goal),
+            _ => (),
+        }
     }
     pub fn print(&self) {
         print!("  ");
@@ -54,6 +93,25 @@ impl TileMatrix {
     }
 }
 
+#[derive(Clone)]
+pub struct BitMatrix {
+    pub width: usize,
+    pub bv: BitVec,
+} 
+impl BitMatrix {
+    pub fn new(width: usize, len: usize) -> BitMatrix {
+        BitMatrix {
+            width, bv: BitVec::from_elem(len, false)
+        }
+    }
+    pub fn get(&self, p: Point2D) -> Option<bool> {
+        self.bv.get(p.y * self.width + p.x)
+    }
+    pub fn set(&mut self, p: Point2D, val: bool) {
+        self.bv.set(p.y * self.width + p.x, val);
+    }
+}
+
 // Simple point struct
 #[derive(Copy, Clone, Hash, PartialEq, Eq)]
 pub struct Point2D {
@@ -73,7 +131,11 @@ impl Point2D {
             Action::Down => Point2D::new(self.x, self.y + 1),
             Action::Left => Point2D::new(self.x - 1, self.y),
             Action::Right => Point2D::new(self.x + 1, self.y),
-            _ => self.clone(),
+            Action::PushUp => Point2D::new(self.x, self.y - 1),
+            Action::PushDown => Point2D::new(self.x, self.y + 1),
+            Action::PushLeft => Point2D::new(self.x - 1, self.y),
+            Action::PushRight => Point2D::new(self.x + 1, self.y),
+            Action::NoMove => self.clone(),
         }
     }
 }
@@ -125,11 +187,6 @@ impl Action {
     }
 }
 
-pub enum Output {
-    Found,
-    Value(usize),
-}
-
 // This structure stores data about the analysis.
 pub struct RunDat {
     pub nodes_checked: usize,
@@ -144,10 +201,8 @@ impl RunDat {
     }
 
     pub fn print(&self) {
-        println!("----------");
-        println!("Rundata:");
+        println!("-------- Run Data: --------");
         println!("nodes checked = {}", self.nodes_checked);
         println!("nodes generated = {}", self.nodes_generated);
-        println!("----------");
     }
 }

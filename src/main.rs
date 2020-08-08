@@ -32,13 +32,17 @@ fn main() {
             .about("Uses the IDA* algorithm to do a tree search on the problem")
             .arg(Arg::with_name("profile")
                 .long("profile")
-                .help("Runs the given search through a profiler and returns a flamegraph."))
+                .help("Runs the given search through a profiler and returns a flamegraph. Note: does not work on windows-wsl version of linux."))
             .arg(Arg::with_name("closest-box")
                 .long("closest-box")
                 .help("This heuristic is the distance from the closest box to the goal. It is admissible."))
+            .arg(Arg::with_name("goal-count")
+                .long("goal-count")
+                .help("This heuristic uses the number of goals which are not covered, which is faster but also less intelligent. It is admissible."))
             .group(ArgGroup::with_name("heuristic")
                 .required(true)
-                .arg("closest-box"))
+                .arg("closest-box")
+                .arg("goal-count"))
         )
         .get_matches();
 
@@ -53,6 +57,9 @@ fn main() {
         if matches.is_present("closest-box") {
             // add the cloest-box heuristic
             solver = Some(IDAStarSolver::new(puzzle, heuristic::closest_box, !is_silent));
+        } else if matches.is_present("goal-count") {
+            // add the cloest-box heuristic
+            solver = Some(IDAStarSolver::new(puzzle, heuristic::goal_count, !is_silent));
         }
 
         if matches.is_present("profile") {
@@ -70,8 +77,7 @@ fn main() {
             if let Ok(report) = guard.report().build() {
                 let file = File::create("flamegraph.svg").unwrap();
                 report.flamegraph(file).unwrap();
-
-                println!("report: {}", &report);
+                println!("Flamegraph Generated");
             };
 
         } else {
