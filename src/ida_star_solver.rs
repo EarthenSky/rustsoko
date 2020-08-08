@@ -82,7 +82,7 @@ impl Node {
     }
 
     // effectively a recursive floodfill algorithm.
-    // TODO: do non-recursive version.
+    // TODO: do non-recursive version if neccesary.
     pub fn find_walkable_spaces(&self, current: Point2D, walk_map: &mut BitMatrix) {
         let (x, y) = current.pos();
         let adjacent: Vec<Point2D> = vec![ 
@@ -106,7 +106,46 @@ impl Node {
         }
     }
 
-    pub fn is_deadlocked(&self) -> bool {
+    // Simple freezed deadlock detection, just to see how much it helps.
+    pub fn is_deadlocked_simple(&self, moved_crate: Point2D) -> bool {
+        match self.map.get(moved_crate) {
+            Tile::CrateGoal => return false,
+            Tile::Crate => {
+                let width = 3;
+                let sur_map: Vec<Tile> = vec![
+                    moved_crate.from(Action::Up).from(Action::Left),
+                    moved_crate.from(Action::Up),
+                    moved_crate.from(Action::Up).from(Action::Right),
+                    moved_crate.from(Action::Left),
+                    moved_crate,
+                    moved_crate.from(Action::Right),
+                    moved_crate.from(Action::Down).from(Action::Left),
+                    moved_crate.from(Action::Down),
+                    moved_crate.from(Action::Down).from(Action::Right)
+                ].iter().map(|p| self.map.get(*p)).collect();  // surround map
+
+                if sur_map[1] == Tile::Wall && sur_map[3] == Tile::Wall {
+                    return true;
+                } else if sur_map[1] == Tile::Wall && sur_map[5] == Tile::Wall {
+                    return true;
+                } else if sur_map[3] == Tile::Wall && sur_map[7] == Tile::Wall {
+                    return true;
+                } else if sur_map[5] == Tile::Wall && sur_map[7] == Tile::Wall {
+                    return true;
+                }
+
+                if sur_map[0].is_freezable() && sur_map[1].is_freezable() && sur_map[3].is_freezable() {
+                    return true;
+                } else if sur_map[1].is_freezable() && sur_map[2].is_freezable() && sur_map[5].is_freezable() {
+                    return true;
+                } else if sur_map[3].is_freezable() && sur_map[6].is_freezable() && sur_map[7].is_freezable() {
+                    return true;
+                } else if sur_map[5].is_freezable() && sur_map[7].is_freezable() && sur_map[8].is_freezable() {
+                    return true;
+                }
+            }
+            _ => (),
+        };
         false
     }
 }
@@ -198,6 +237,7 @@ impl IDAStarSolver {
                 Action::PushRight, Action::PushLeft, Action::PushDown, Action::PushUp 
             ];
 
+            // check all four directions.
             for action in adjacent {
                 let crate_end = crate_pos.from(action);
                 let end_tile = node.map.get(crate_end);
@@ -208,7 +248,7 @@ impl IDAStarSolver {
                     continue;
                 }
 
-                // TODO: put all the internals into the make_new() function.
+                // TODO: put all these internals into the make_new() function.
                 match end_tile {
                     Tile::Wall => (),
                     Tile::Crate => (),
@@ -223,15 +263,17 @@ impl IDAStarSolver {
                         new_crates[i] = crate_end.clone();
 
                         // every push costs 1
-                        self.rundat.nodes_generated += 1;
                         let mut new_node = Node::make_new(
                             action, new_map, new_crates, crate_pos.clone(), node.g + 1
                         );
 
                         // ignore node if it is deadlocked.
-                        if !new_node.is_deadlocked() {
+                        if !new_node.is_deadlocked_simple(crate_end) {
+                            self.rundat.nodes_generated += 1;
                             new_node.h = (self.heuristic)(&self, &new_node);
                             succ_vec.push(new_node);
+                        } else {
+                            self.rundat.nodes_deadlocked += 1;
                         }
                     }
                 }
@@ -265,6 +307,7 @@ impl IDAStarSolver {
             bound = new_f;
         }
         
+        println!("starting A*");
         // Find the shortest solution of push-len $bound by using A* to do previously assumed pathfinding.
         let mut min_moves = std::usize::MAX;
         let mut best_move_path: Vec<Action> = Vec::new();

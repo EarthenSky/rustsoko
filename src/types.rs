@@ -1,6 +1,6 @@
 use bit_vec::BitVec;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq)]
 pub enum Tile {
     Wall,
     Player,
@@ -9,6 +9,17 @@ pub enum Tile {
     CrateGoal,
     Goal,
     Floor,
+}
+impl Tile {
+    // for freeze deadlocks
+    pub fn is_freezable(&self) -> bool {
+        match self {
+            Tile::Wall => true,
+            Tile::Crate => true,
+            Tile::CrateGoal => true,  // this is true because self is crate.
+            _ => false,
+        }
+    }
 }
 
 #[derive(Clone)]
@@ -191,12 +202,14 @@ impl Action {
 pub struct RunDat {
     pub nodes_checked: usize,
     pub nodes_generated: usize,
+    pub nodes_deadlocked: usize,
 }
 impl RunDat {
     pub fn new() -> RunDat {
         RunDat {
             nodes_checked: 0,
             nodes_generated: 0,
+            nodes_deadlocked: 0,
         }
     }
 
@@ -204,5 +217,6 @@ impl RunDat {
         println!("-------- Run Data: --------");
         println!("nodes checked = {}", self.nodes_checked);
         println!("nodes generated = {}", self.nodes_generated);
+        println!("nodes deadlocked = {}", self.nodes_deadlocked);
     }
 }
