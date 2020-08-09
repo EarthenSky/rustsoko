@@ -50,6 +50,7 @@ pub mod heuristic {
 pub struct Node {
     pub action: Action,
     pub map: TileMatrix,
+    pub deadlock_map: TileDataMatrix,
     pub crates: Vec<Point2D>,
     pub player: Point2D,
     pub g: usize,  // this is number of pushes
@@ -60,16 +61,17 @@ impl Node {
     // make root
     pub fn default(map: TileMatrix, crates: Vec<Point2D>, player: Point2D) -> Node {
         let hash = Node::hash(&crates, &player);
+        let deadlock_map = TileDataMatrix::from_init(&map);
         Node {
-            action: Action::NoMove, map, crates, player, g: 0, h: 0, hash
+            action: Action::NoMove, map, deadlock_map, crates, player, g: 0, h: 0, hash
         }
     }
 
-    pub fn make_new(action: Action, map: TileMatrix, 
+    pub fn make_new(action: Action, map: TileMatrix, deadlock_map: TileDataMatrix, 
                 crates: Vec<Point2D>, player: Point2D, g: usize) -> Node {
         let hash = Node::hash(&crates, &player);
         Node {
-            action, map, crates, player, g, h: 0, hash 
+            action, map, deadlock_map, crates, player, g, h: 0, hash 
         }
     }
 
@@ -109,9 +111,37 @@ impl Node {
     // Simple freezed deadlock detection, just to see how much it helps.
     pub fn is_deadlocked_simple(&self, moved_crate: Point2D) -> bool {
         match self.map.get(moved_crate) {
-            Tile::CrateGoal => return false,
+            Tile::CrateGoal => {
+                let _width = 3;
+                let sur_map: Vec<Tile> = vec![
+                    moved_crate.from(Action::Up).from(Action::Left),
+                    moved_crate.from(Action::Up),
+                    moved_crate.from(Action::Up).from(Action::Right),
+                    moved_crate.from(Action::Left),
+                    moved_crate,
+                    moved_crate.from(Action::Right),
+                    moved_crate.from(Action::Down).from(Action::Left),
+                    moved_crate.from(Action::Down),
+                    moved_crate.from(Action::Down).from(Action::Right)
+                ].iter().map(|p| self.map.get(*p)).collect();  // surround map
+
+                if sur_map[0].is_freezable() && sur_map[1].is_freezable() && sur_map[3].is_freezable() && 
+                   (sur_map[0].is_pure_crate() || sur_map[1].is_pure_crate() || sur_map[3].is_pure_crate()) {
+                    return true;
+                } else if sur_map[1].is_freezable() && sur_map[2].is_freezable() && sur_map[5].is_freezable() && 
+                          (sur_map[1].is_pure_crate() || sur_map[2].is_pure_crate() || sur_map[5].is_pure_crate()) {
+                    return true;
+                } else if sur_map[3].is_freezable() && sur_map[6].is_freezable() && sur_map[7].is_freezable() && 
+                          (sur_map[3].is_pure_crate() || sur_map[6].is_pure_crate() || sur_map[7].is_pure_crate()) {
+                    return true;
+                } else if sur_map[5].is_freezable() && sur_map[7].is_freezable() && sur_map[8].is_freezable() && 
+                          (sur_map[5].is_pure_crate() || sur_map[7].is_pure_crate() || sur_map[8].is_pure_crate()) {
+                    return true;
+                }
+                //return false;
+            },
             Tile::Crate => {
-                let width = 3;
+                let _width = 3;
                 let sur_map: Vec<Tile> = vec![
                     moved_crate.from(Action::Up).from(Action::Left),
                     moved_crate.from(Action::Up),
@@ -214,7 +244,6 @@ impl IDAStarSolver {
     }
 
     // We know that crates will never be on the edge of the map.
-    // TODO: check that all maps are always surrounded by walls, in the loading phase.
     // Node expanding function, expand nodes ordered by g + h(node). Additionally, there is a secondary value which is
     // used to break ties.
     // Step cost is updated in here.
@@ -245,6 +274,9 @@ impl IDAStarSolver {
                 
                 let can_walk = walk_map.get(push_start).unwrap();
                 if !can_walk {
+                    continue;
+                } else if node.deadlock_map.is_valid(push_start) {  // TODO: this
+                    self.rundat.node_stopped_by_deadlock_map += 1;
                     continue;
                 }
 
@@ -279,7 +311,8 @@ impl IDAStarSolver {
                 }
             }
         }
-        // sort by g cost, then by moves to break ties.
+
+        // sort by f cost.
         succ_vec.sort_by(|n1, n2| 
             if n1.g + n1.h > n2.g + n2.h {
                 Ordering::Greater
@@ -347,15 +380,7 @@ impl IDAStarSolver {
     fn search(&mut self, bound: usize) -> usize {
         let node: &Node = self.path.last().unwrap();  // End node will always exist.
         let f_cost = node.g + node.h;  // estimated cost of the cheapest path (root..node..goal)
-        
-        /*
-            println!("-------------------------------"); 
-            println!("trying:");
-            node.map.print();
-            println!("player position -> xy:{},{}", &node.player.x, &node.player.y);
-            println!("-------------------------------"); 
-        */
-        
+    
         self.rundat.nodes_checked += 1;
 
         // base cases
@@ -389,6 +414,10 @@ impl IDAStarSolver {
                 self.path.pop();
             }
         }
+        
+        // TODO: test this => save parent-most deadlocked states which are when the tree cannot ever be solved.
+        // TODO: maybe even pass depth to figure out how deep it may be. 
+        //println!("found a deadlock state");
         return min;
     }
 

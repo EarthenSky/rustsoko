@@ -92,9 +92,19 @@ pub fn read_puzzle(filepath: &str, print_puzzle: bool) -> TileMatrix {
         width: puzzle_width, 
         data: tile_vec,
     };
+
+    if !is_surrounded_by_walls(&puzzle) {
+        println!("Error: puzzle file is malformed.\nreason: Puzzle must be completely surrounded by walls.");
+    }
+
     if print_puzzle {
         println!("Successfully loaded the following puzzle:");
         puzzle.print();
     }
     puzzle
+}
+
+fn is_surrounded_by_walls(puzzle: &TileMatrix) -> bool {
+    // TODO: this
+    true
 }

@@ -19,7 +19,6 @@ pub fn manhattan_distance(p1: Point2D, p2: Point2D) -> usize {
     val
 }
 
-// TODO: astar pathfinding.
 // the heuristic function used is simple manhattan distance
 pub fn astar_pathfind(puzzle_map: &TileMatrix, push_action: Action, 
                       start_point: Point2D, goal_point: Point2D) -> Vec<Action> {
