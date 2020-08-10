@@ -25,14 +25,14 @@ fn main() {
         .arg(Arg::with_name("silent")
             .short("s")
             .long("silent")
-            .help("Only reuturns solution to puzzle"))
+            .help("Returns puzzle stats in csv format -> time_elapsed,nodes_checked,solutions,pushes,moves,solution_string"))
         .arg(Arg::with_name("INPUT")
             .required(true)
             .index(1)
             .help("Path to sokoban puzzle file to solve"))
         .subcommand(
             SubCommand::with_name("solve")
-            .about("Uses IDA* to do a tree search on the problem.")
+            .about("Uses IDA* to do a tree search on the problem. Puzzles will be returned 'unsolved' if they take more than 300s and don't find a solution.")
             .arg(Arg::with_name("profile")
                 .long("profile")
                 .help("Runs the given search through a profiler and returns a flamegraph. \
@@ -40,8 +40,8 @@ fn main() {
             .arg(Arg::with_name("deadlock-hashing")
                 .long("deadlock-hashing")
                 .help("Hashes deadlocked positions so that IDA* search can ignore the children deadlocked positions after secondary iterations."))
-            .arg(Arg::with_name("perfect-match-greedy")
-                .long("perfect-match-greedy")
+            .arg(Arg::with_name("greedy-perfect-match")
+                .long("greedy-perfect-match")
                 .help("This heuristic estimates the calculation of a perfect match of a bipartite graph between the goals and the crates, falling back to closest-box if neccesary. It is admissible."))
             .arg(Arg::with_name("closest-box")
                 .long("closest-box")
@@ -53,7 +53,7 @@ fn main() {
                 .required(true)
                 .arg("closest-box")
                 .arg("goal-count")
-                .arg("perfect-match-greedy"))
+                .arg("greedy-perfect-match"))
         )
         .subcommand(
             SubCommand::with_name("puzzle-gen")
@@ -101,7 +101,7 @@ fn do_normal_solve(puzzle: TileMatrix, is_silent: bool, deadlock_hashing: bool, 
         solver = Some(IDAStarSolver::new(puzzle, heuristic::closest_box, deadlock_hashing, !is_silent));
     } else if matches.is_present("goal-count") {
         solver = Some(IDAStarSolver::new(puzzle, heuristic::goal_count, deadlock_hashing, !is_silent));
-    } else if matches.is_present("perfect-match-greedy") {
+    } else if matches.is_present("greedy-perfect-match") {
         solver = Some(IDAStarSolver::new(puzzle, heuristic::greedy_perfect_match, deadlock_hashing, !is_silent));
     }
 
@@ -127,7 +127,7 @@ fn do_batch_solve(mut puzzles: Vec<TileMatrix>, is_silent: bool, deadlock_hashin
         let mut solver: Option<IDAStarSolver> = None;
         if !is_silent {
             println!("======================================================");
-            println!("Starting puzzle {}:", i);
+            println!("Starting puzzle {}:", i+1);
             puzzle.print();
         }
 
@@ -136,7 +136,7 @@ fn do_batch_solve(mut puzzles: Vec<TileMatrix>, is_silent: bool, deadlock_hashin
             solver = Some(IDAStarSolver::new(puzzle, heuristic::closest_box, deadlock_hashing, !is_silent));
         } else if matches.is_present("goal-count") {
             solver = Some(IDAStarSolver::new(puzzle, heuristic::goal_count, deadlock_hashing, !is_silent));
-        } else if matches.is_present("perfect-match-greedy") {
+        } else if matches.is_present("greedy-perfect-match") {
             solver = Some(IDAStarSolver::new(puzzle, heuristic::greedy_perfect_match, deadlock_hashing, !is_silent));
         }
 
@@ -146,7 +146,7 @@ fn do_batch_solve(mut puzzles: Vec<TileMatrix>, is_silent: bool, deadlock_hashin
             let guard = pprof::ProfilerGuard::new(100).unwrap();
             execute_solver(solver, is_silent);
             if let Ok(report) = guard.report().build() {
-                let file = File::create( format!("flamegraph{}.svg", i) ).unwrap();
+                let file = File::create( format!("flamegraph{}.svg", i+1) ).unwrap();
                 report.flamegraph(file).unwrap();
                 println!("Flamegraph Generated");
             };

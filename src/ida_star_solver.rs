@@ -4,12 +4,13 @@ use std::hash::{Hash, Hasher};
 use std::collections::HashSet;
 use std::cmp::Ordering;
 
+use std::time::Instant;
+
 use crate::types::{Tile, Point2D, TileMatrix, Action, RunDat, BitMatrix};
 use crate::util;
 
-// Desc:
-//   This solver works in terms of pushes, using shortest moves to break ties. Uses
-//   IDA* to find shortest paths during runtime.
+const TIME_LIMIT: u64 = 300;
+const PER_NODE_TIME_CHECK: usize = 10_000;  // check time once per hundred thousand nodes.
 
 pub mod heuristic {
     use super::*;
@@ -46,8 +47,6 @@ pub mod heuristic {
     }
 
     // Attempts to find perfect matches, but when it fails it simply falls back on the closest box heuristic.
-    // Kinda-working --> why does it search too far sometimes?
-    // TODO: optimize
     pub fn greedy_perfect_match(solver: &IDAStarSolver, node: &Node) -> usize {
         let mut dis_vec: Vec<usize> = Vec::new();
         let width: usize = node.crates.len();
@@ -127,90 +126,6 @@ pub mod heuristic {
         }
         distance
     }
-
-    /*
-    // O(n^4) method
-    pub fn perfect_match(solver: &IDAStarSolver, node: &Node) {
-        let mut dis_vec: Vec<usize> = Vec::new();
-        let width: usize = node.crates.len();
-
-        // get initial settings. & step 0
-        for crate_pos in &node.crates {
-            for goal_pos in &solver.goals {
-                let dis = util::manhattan_distance(*crate_pos, *goal_pos);
-                dis_vec.push(dis);
-            }
-        }
-
-        let dis_vec_clone = dis_vec.clone();
-
-        // step 0
-        for y in 0..width {
-            let mut min: usize = std::usize::MAX;
-            for x in 0..width {
-                let dis = dis_vec[y * width + x];
-                if min > dis {
-                    min = dis;
-                }
-            }
-
-            for x in 0..width {
-                dis_vec[y * width + x] -= min;
-            }
-        }
-
-        // step 0
-        for x in 0..width {
-            let mut min: usize = std::usize::MAX;
-            for y in 0..width {
-                let dis = dis_vec[y * width + x];
-                if min > dis {
-                    min = dis;
-                }
-            }
-
-            for y in 0..width {
-                dis_vec[y * width + x] -= min;
-            }
-        }
-
-        loop {
-            // attempt assignment
-            let assignments: Vec<(usize, usize)> = Vec::new();
-            let taken_y: Vec<bool> = Vec::new();
-            taken_y.resize(width, false);
-            for x in 0..width {
-                for y in 0..width {
-                    if dis_vec[y * width + x] == 0 && !taken_y[y] {
-                        assignments.push( (x, y) );
-                        taken_y[y] == true;
-                    }
-                }
-            }
-
-            // Base case
-            if assignments.len() == width {
-                let mut distance: usize = 0;
-                for a in assignments {
-                    distance += dis_vec_clone[a.1 * width + a.0];
-                }
-                return distance;
-            }
-
-            // cover with lines
-            let checked_y: Vec<bool> = taken_y.map(|v| !v).collect();
-            let checked_x: Vec<bool> = Vec::new();
-            checked_x.resize(width, false);
-            let exit = false;
-            while !exit {
-                
-            } 
-
-            // create additional zeroes
-
-        }
-    }
-    */
 }
 
 #[derive(Clone)]
@@ -249,7 +164,6 @@ impl Node {
     }
 
     // effectively a recursive floodfill algorithm.
-    // TODO: do non-recursive version if neccesary.
     pub fn find_walkable_spaces(&self, current: Point2D, walk_map: &mut BitMatrix) {
         let (x, y) = current.pos();
         let adjacent: Vec<Point2D> = vec![ 
@@ -345,6 +259,8 @@ impl Node {
     }
 }
 
+// Desc:
+//   This solver works in terms of pushes, finding best moves after execution.
 pub struct IDAStarSolver {
     debug: bool,
     deadlock_hashing_on: bool,
@@ -353,7 +269,9 @@ pub struct IDAStarSolver {
     path: Vec<Node>,  // current search path (acts like a stack)
     heuristic: fn(&IDAStarSolver, &Node) -> usize,  // estimated cost of the cheapest path (node..goal)
     solutions: Vec<Vec<Node>>,
-    deadlocks: HashSet<TileMatrix>
+    deadlocks: HashSet<TileMatrix>,
+    timer: Instant,
+    search_over: bool,
 }
 impl IDAStarSolver {
     pub fn new(puzzle: TileMatrix, heuristic: fn(&IDAStarSolver, &Node) -> usize, deadlock_hashing_on: bool, debug: bool) -> IDAStarSolver {
@@ -394,14 +312,14 @@ impl IDAStarSolver {
         
         let mut solver = IDAStarSolver {
             debug, deadlock_hashing_on, rundat: RunDat::new(), goals, path, 
-            heuristic, solutions: Vec::new(), deadlocks: HashSet::new()
+            heuristic, solutions: Vec::new(), deadlocks: HashSet::new(), 
+            timer: Instant::now(), search_over: false
         };
         solver.path[0].h = (solver.heuristic)(&solver, &solver.path[0]); 
         solver
     }
     
     // if a crate is not on a goal, then it is not solved.
-    // TODO: have node store how many crates are on nodes.
     fn is_goal(&self, node: &Node) -> bool {
         for tile in &node.map.data {
             if let Tile::Crate = tile {
@@ -441,7 +359,6 @@ impl IDAStarSolver {
                     continue;
                 }
 
-                // TODO: put all these internals into the make_new() function.
                 match end_tile {
                     Tile::Wall => (),
                     Tile::Crate => (),
@@ -486,8 +403,7 @@ impl IDAStarSolver {
         succ_vec
     }  
 
-    // return either NOT_FOUND or a pair with the best path and its cost
-    fn ida_star(&mut self) -> (Vec<Action>, usize) {
+    fn ida_star(&mut self) -> (Vec<Action>, usize, usize) {
         let mut bound = self.path.last().unwrap().h; // Oh damn, this is smart.
         while self.solutions.is_empty() {  // TODO: after 300s give statistics of how close it was.
             if self.debug {
@@ -495,7 +411,7 @@ impl IDAStarSolver {
             }
             let new_f = self.search(bound);
             if new_f == std::usize::MAX {
-                return (Vec::new(), bound);
+                return (Vec::new(), 0, bound);
             }
 
             bound = new_f;
@@ -532,12 +448,7 @@ impl IDAStarSolver {
             }
         } 
 
-        if self.debug { 
-            println!("-------- Pre-Stats: --------");
-            println!("solutions = {}", self.solutions.len());
-        }
-
-        return (best_move_path, bound);
+        return (best_move_path, self.solutions.len(), bound);
     }
 
     // adapted from https://en.wikipedia.org/wiki/Iterative_deepening_A*
@@ -545,15 +456,20 @@ impl IDAStarSolver {
         let node: &Node = self.path.last().unwrap();  // End node will always exist.
         let f_cost = node.g + node.h;  // estimated cost of the cheapest path (root..node..goal)
     
-        self.rundat.nodes_checked += 1;
+        if self.rundat.nodes_checked % PER_NODE_TIME_CHECK == 0 && self.timer.elapsed().as_secs() > TIME_LIMIT {
+            self.search_over = true;
+        }
 
-        // TODO: if time limit is met, exit instantly.
+        if self.search_over  {
+            return std::usize::MAX;
+        }
+
+        self.rundat.nodes_checked += 1;
 
         // base cases
         if f_cost > bound { 
             return f_cost;  // end current dls
         } else if self.is_goal(node) {
-            //println!("b->{},pl->{}", bound, self.path.len());
             self.solutions.push(self.path.clone());
             return f_cost;  // this number doesn't matter.
         } else if self.deadlock_hashing_on && self.deadlocks.contains(&node.map) {
@@ -587,27 +503,46 @@ impl IDAStarSolver {
             }
         }
         
-        // TODO: test this => save parent-most deadlocked states which are when the tree cannot ever be solved.
-        // TODO: maybe even pass depth to figure out how deep it may be. 
-        
         return min;
     }
 
     // currently just returns solution as string.
     pub fn solve(&mut self) -> String {
+        self.timer = Instant::now();
+
         // run ida_star on the puzzle.
-        let (path, cost) = self.ida_star();
+        let (path, solutions, bound) = self.ida_star();
+
         if self.debug {
-            println!("-------- Path Stats: --------");
-            println!("path cost: {}", cost);
+            println!("-------- Stats: --------");
+            println!("solutions = {}", solutions);
+            println!("final bound: {}", bound);
             println!("path len: {}", path.len());
+            println!("time elapsed (in seconds) = {}", self.timer.elapsed().as_secs_f32());
             self.rundat.print();
         }
 
-        if path.len() == 0 {
-            return "no solution".to_string();
+        if self.search_over {
+            if self.debug {
+                return "time elapsed".to_string();
+            } else {
+                return format!("{},{},{},{},{},{}", self.timer.elapsed().as_secs_f32(), self.rundat.nodes_checked, solutions, bound, path.len(), "".to_string());
+            }
         }
-        Action::to_string(&path)
+
+        if path.len() == 0 {
+            if self.debug {
+                return "no solution".to_string();
+            } else {
+                return format!("{},{},{},{},{},{}", self.timer.elapsed().as_secs_f32(), self.rundat.nodes_checked, solutions, bound, path.len(), "".to_string());
+            }
+        }
+        
+        if self.debug {
+            return Action::to_string(&path);
+        } else {
+            return format!("{},{},{},{},{},{}", self.timer.elapsed().as_secs_f32(), self.rundat.nodes_checked, solutions, bound, path.len(), Action::to_string(&path));
+        }
     }
 
 }
