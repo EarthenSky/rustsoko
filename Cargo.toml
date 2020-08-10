@@ -1,5 +1,5 @@
 [package]
-name = "sokosolve"
+name = "rustsoko"
 version = "0.1.0"
 authors = ["geb"]
 edition = "2018"

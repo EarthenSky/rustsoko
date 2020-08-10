@@ -1,6 +1,6 @@
 use bit_vec::BitVec;
 
-#[derive(Copy, Clone, PartialEq, Eq)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub enum Tile {
     Wall,
     Player,
@@ -27,25 +27,13 @@ impl Tile {
             _ => false,
         }
     }
-
-    pub fn to_tile_data(&self) -> TileData {
-        match self {
-            Tile::Wall => TileData::Wall,
-            Tile::Player => TileData::Player,
-            Tile::PlayerGoal => TileData::Goal,
-            Tile::Crate => TileData::Crate,
-            Tile::CrateGoal => TileData::CrateGoal,
-            Tile::Goal => TileData::Goal,
-            Tile::Floor => TileData::Floor(false, false, false, false),
-        }
-    }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Eq, PartialEq, Hash)]
 pub struct TileMatrix {
     pub width: usize,
     pub data: Vec<Tile>,
-} 
+}
 impl TileMatrix {
     //pub fn get(&self, x: usize, y: usize) -> Tile {
     //    self.data[y * self.width + x]
@@ -105,8 +93,9 @@ impl TileMatrix {
             if i % self.width == 0 {
                 if i / self.width >= 10 {
                     print!("\n  ");
+                } else {
+                    print!("\n{} ", i / self.width);
                 }
-                print!("\n{} ", i / self.width);
             }
             print!("{}", match tile {
                 Tile::Wall => '#',
@@ -237,173 +226,5 @@ impl RunDat {
         println!("nodes checked = {}", self.nodes_checked);
         println!("nodes generated = {}", self.nodes_generated);
         println!("nodes deadlocked = {}", self.nodes_deadlocked);
-    }
-}
-
-
-// Rules:
-// - a dead space is a space in which it is impossible for the player to ever move behind the tile.
-// - a tile cannot be pushed into a dead space.
-// -
-
-
-// TODO: this
-#[derive(Copy, Clone, PartialEq, Eq)]
-pub enum TileData {
-    Wall,
-    Crate(bool, bool, bool, bool),
-    CrateGoal(bool, bool, bool, bool),
-    Goal,
-    //up, right, down, left -> true means that a box cannot be pushed from that direction into the space.
-    Floor(bool, bool, bool, bool),  
-}
-impl TileData {
-    
-}
-
-#[derive(Clone)]
-pub struct TileDataMatrix {
-    pub width: usize,
-    pub data: Vec<TileData>,
-} 
-impl TileDataMatrix {
-    pub fn get(&self, p: Point2D) -> TileData {
-        self.data[p.y * self.width + p.x]
-    }
-    pub fn set(&mut self, p: Point2D, val: TileData) {
-        self.data[p.y * self.width + p.x] = val;
-    }
-
-    fn apply_wall_check(&self) {
-        // ignore the direct edges (because they can never be useful tiles.)
-        for y in 1..(height - 1) {
-            for x in 1..(width - 1) {
-                if !(y == 0 || x == 0 || y == height-1 || x == width-1) {
-                    let cur_pos = tile_data_map.get(Point2D::new(x, y));
-                    match cur_pos {
-                        TileData::Floor(up, right, down, left) => {
-                            let up_tile_data = tile_data_map.get(cur_pos.from(Action::Up));
-                            let right_tile_data = tile_data_map.get(cur_pos.from(Action::Right));
-                            let down_tile_data = tile_data_map.get(cur_pos.from(Action::Down));
-                            let left_tile_data = tile_data_map.get(cur_pos.from(Action::Left));
-                            if up_tile_data == TileData::Wall || up_tile_data.can_move_perpendicular(cur_pos) {
-                                if !up || !down {
-                                    up = true;
-                                    down = true;
-                                    updated_tile += 1;
-                                }
-                            }
-                            if right_tile_data == TileData::Wall || right_tile_data.can_move_perpendicular(cur_pos) {
-                                if !right || !left {
-                                    left = true;
-                                    right = true;
-                                    updated_tile += 1;
-                                }
-                            }
-                            if down_tile_data == TileData::Wall || down_tile_data.can_move_perpendicular(cur_pos) {
-                                if !down || !up {
-                                    up = true;
-                                    down = true;
-                                    updated_tile += 1;
-                                }
-                            }
-                            if left_tile_data == TileData::Wall || left_tile_data.can_move_perpendicular(cur_pos) {
-                                if !left || !right {
-                                    left = true;
-                                    right = true;
-                                    updated_tile += 1;
-                                }
-                            }
-                            tile_data_map.set(cur_pos, TileData::floor(up, right, down, left));
-                        }
-                        _ => (),
-                    };
-                }
-            }
-        }
-    }
-
-    fn apply_wall_check(&self) {
-        for y in 1..(height - 1) {
-            for x in 1..(width - 1) {
-                if !(y == 0 || x == 0 || y == height-1 || x == width-1) {
-                    let cur_pos = tile_data_map.get(Point2D::new(x, y));
-                    match cur_pos {
-                        TileData::Crate(up, right, down, left) => {
-                            let up_tile_data = tile_data_map.get(cur_pos.from(Action::Up));
-                            let right_tile_data = tile_data_map.get(cur_pos.from(Action::Right));
-                            let down_tile_data = tile_data_map.get(cur_pos.from(Action::Down));
-                            let left_tile_data = tile_data_map.get(cur_pos.from(Action::Left));
-                            if up_tile_data == TileData::Wall || up_tile_data.can_move_perpendicular(cur_pos) {
-                                if !up || !down {
-                                    up = true;
-                                    down = true;
-                                    updated_tile += 1;
-                                }
-                            }
-                            if right_tile_data == TileData::Wall || right_tile_data.can_move_perpendicular(cur_pos) {
-                                if !right || !left {
-                                    left = true;
-                                    right = true;
-                                    updated_tile += 1;
-                                }
-                            }
-                            if down_tile_data == TileData::Wall || down_tile_data.can_move_perpendicular(cur_pos) {
-                                if !down || !up {
-                                    up = true;
-                                    down = true;
-                                    updated_tile += 1;
-                                }
-                            }
-                            if left_tile_data == TileData::Wall || left_tile_data.can_move_perpendicular(cur_pos) {
-                                if !left || !right {
-                                    left = true;
-                                    right = true;
-                                    updated_tile += 1;
-                                }
-                            }
-                            tile_data_map.set(cur_pos, TileData::floor(up, right, down, left));
-                        }
-                        _ => (),
-                    };
-                }
-            }
-        }
-    }
-
-    pub fn from_init(tile_map: &TileMatrix) -> TileDataMatrix {
-        let (width, height) = (tile_map.width, tile_map.data.len() / width);
-        let data Vec<TileData> = Vec::with_capacity(tile_map.data.len());
-        
-        for tile in &tile_map.data {
-            data.push( tile.to_tile_data() );
-        }
-
-        let mut tile_data_map = TileDataMatrix {
-            width, data
-        };
-
-        self.apply_wall_check(); // checks walls for dead spaces
-        // TODO: interpolate dead spaces between flat walls.
-        
-        let mut tiles_updated = 0;
-        while tiles_updated != 0 {
-            tiles_updated = 0;
-            tiles_updated += self.apply_crate_check();
-            tiles_updated += self.apply_dead_space_check();
-        }
-        
-    }
-
-    pub fn is_valid(&self, crate_pos: Point2D, action: Action) {
-        // TODO: return if a crate move is allowed to be made
-        match self.get(crate_pos.from(action)) {
-            TileData::Floor(up, right, down, left) {
-                
-            }
-            TileData::Wall => return false,
-            _ => (),
-        }
-        true
     }
 }
