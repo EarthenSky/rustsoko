@@ -2,7 +2,34 @@ use std::collections::HashMap;
 use priority_queue::PriorityQueue;
 use std::cmp::Reverse;
 
-use crate::types::{Action, TileMatrix, Tile, Point2D};
+use crate::types::{Action, TileMatrix, Tile, Point2D, BitMatrix};
+
+// This module is for utility algorithms like floodfill, manhattan_dis, and a*.
+
+// effectively a recursive floodfill algorithm.
+pub fn find_walkable_spaces(map: &TileMatrix, current: Point2D, walk_map: &mut BitMatrix) {
+    let adjacent: Vec<Point2D> = vec![ 
+        current.from(Action::Left),
+        current.from(Action::Right),
+        current.from(Action::Up),
+        current.from(Action::Down),
+    ];
+    for point in adjacent {
+        if walk_map.get(point).unwrap() == false {
+            match map.get(point) {
+                Tile::Floor => {
+                    walk_map.set(point, true);
+                    find_walkable_spaces(map, point, walk_map);
+                },
+                Tile::Goal => {
+                    walk_map.set(point, true);
+                    find_walkable_spaces(map, point, walk_map);
+                },
+                _ => (),
+            }
+        }
+    }
+}
 
 pub fn manhattan_distance(p1: Point2D, p2: Point2D) -> usize {
     let mut val: usize = 0;

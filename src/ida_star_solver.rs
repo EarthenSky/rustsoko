@@ -10,7 +10,7 @@ use crate::types::{Tile, Point2D, TileMatrix, Action, RunDat, BitMatrix};
 use crate::util;
 
 const TIME_LIMIT: u64 = 300;
-const PER_NODE_TIME_CHECK: usize = 10_000;  // check time once per hundred thousand nodes.
+const PER_NODE_TIME_CHECK: usize = 10_000;  // check time once per n nodes
 
 pub mod heuristic {
     use super::*;
@@ -100,31 +100,31 @@ pub mod heuristic {
                 if dis_vec[y * width + x] == 0 && !taken[y] {
                     assignments.push( (x, y) );
                     taken[y] = true;
+                    break;
                 }
+            }
+
+            // just take min if can't find a best.
+            if taken[y] == false {
+                let mut min: usize = std::usize::MAX;
+                let mut min_x: usize = 0;
+                for x in 0..width {
+                    if dis_vec[y * width + x] < min {
+                        min = dis_vec[y * width + x];
+                        min_x = x;
+                    }
+                }
+                assignments.push( (min_x, y) );
             }
         }
 
-        // Base case
+        assert!(assignments.len() == width);
+
         let mut distance: usize = 0;
-        if assignments.len() == width {
-            for a in assignments {
-                distance += dis_vec_clone[a.1 * width + a.0];
-            }
-            return distance;
+        for a in assignments {
+            distance += dis_vec_clone[a.1 * width + a.0];
         }
-
-        // fallback case
-        for crate_pos in &node.crates {
-            let mut min: usize = std::usize::MAX;
-            for goal_pos in &solver.goals {
-                let dis = util::manhattan_distance(*crate_pos, *goal_pos);
-                if min > dis {
-                    min = dis;
-                }
-            }
-            distance += min;
-        }
-        distance
+        return distance;
     }
 }
 
@@ -163,32 +163,8 @@ impl Node {
         s.finish()
     }
 
-    // effectively a recursive floodfill algorithm.
-    pub fn find_walkable_spaces(&self, current: Point2D, walk_map: &mut BitMatrix) {
-        let (x, y) = current.pos();
-        let adjacent: Vec<Point2D> = vec![ 
-            Point2D::new(x+1, y), Point2D::new(x-1, y), 
-            Point2D::new(x, y+1), Point2D::new(x, y-1) 
-        ];
-        for point in adjacent {
-            if walk_map.get(point).unwrap() == false {
-                match self.map.get(point) {
-                    Tile::Floor => {
-                        walk_map.set(point, true);
-                        self.find_walkable_spaces(point, walk_map);
-                    },
-                    Tile::Goal => {
-                        walk_map.set(point, true);
-                        self.find_walkable_spaces(point, walk_map);
-                    },
-                    _ => (),
-                }
-            }
-        }
-    }
-
     // Simple freezed deadlock detection, just to see how much it helps.
-    pub fn is_deadlocked_simple(&self, moved_crate: Point2D) -> bool {
+    pub fn is_deadlocked(&self, moved_crate: Point2D) -> bool {
         match self.map.get(moved_crate) {
             Tile::CrateGoal => {
                 let _width = 3;
@@ -269,6 +245,7 @@ pub struct IDAStarSolver {
     path: Vec<Node>,  // current search path (acts like a stack)
     heuristic: fn(&IDAStarSolver, &Node) -> usize,  // estimated cost of the cheapest path (node..goal)
     solutions: Vec<Vec<Node>>,
+    simple_deadlocks: BitMatrix,
     deadlocks: HashSet<TileMatrix>,
     timer: Instant,
     search_over: bool,
@@ -276,7 +253,6 @@ pub struct IDAStarSolver {
 impl IDAStarSolver {
     pub fn new(puzzle: TileMatrix, heuristic: fn(&IDAStarSolver, &Node) -> usize, deadlock_hashing_on: bool, debug: bool) -> IDAStarSolver {
         // remove static pieces from the puzzle.
-        let map: TileMatrix = TileMatrix { width: puzzle.width, data: Vec::new() };
         let mut goals: Vec<Point2D> = Vec::new();
         let mut crates: Vec<Point2D> = Vec::new();
         let mut player: Option<Point2D> = None;
@@ -304,19 +280,82 @@ impl IDAStarSolver {
             };
         }
 
-        // Map size is a good vector size estimate which should increase performance because IDA* doesn't particularly
-        // need lots of memory.
-        let mut path: Vec<Node> = Vec::with_capacity(map.data.len());
+        let simple_deadlocks: BitMatrix = IDAStarSolver::find_simple_deadlocks(&puzzle, &goals);
+
+        // puzzle size is a good vector size estimate which should increase performance because IDA* doesn't particularly
+        // need lots of memory. -------------------------------> vVVVv
+        let mut path: Vec<Node> = Vec::with_capacity(puzzle.data.len());
         let root_node = Node::default(puzzle, crates, player.unwrap());
         path.push(root_node);
-        
+
         let mut solver = IDAStarSolver {
             debug, deadlock_hashing_on, rundat: RunDat::new(), goals, path, 
-            heuristic, solutions: Vec::new(), deadlocks: HashSet::new(), 
+            heuristic, solutions: Vec::new(), deadlocks: HashSet::new(), simple_deadlocks,
             timer: Instant::now(), search_over: false
         };
         solver.path[0].h = (solver.heuristic)(&solver, &solver.path[0]); 
         solver
+    }
+
+    fn find_simple_deadlocks(map: &TileMatrix, goals: &Vec<Point2D>) -> BitMatrix {
+        let mut bm = BitMatrix::new(map.width, map.data.len());
+        let mut new_map_data: Vec<Tile> = Vec::new();
+
+        // remove all tiles but floor and wall.
+        for tile in &map.data {
+            new_map_data.push(
+                match tile {
+                    Tile::Player => Tile::Floor,
+                    Tile::PlayerGoal => Tile::Floor,
+                    Tile::Crate => Tile::Floor,
+                    Tile::CrateGoal => Tile::Floor,
+                    Tile::Goal => Tile::Floor,
+                    _ => *tile,
+                }
+            );
+        }
+        let new_map = TileMatrix {
+            width: map.width,
+            data: new_map_data,
+        };
+        
+        // drag goal
+        for goal_pos in goals {
+            let mut cur_checked = BitMatrix::new(map.width, map.data.len());
+            IDAStarSolver::recursive_pull(&new_map, &mut bm, &mut cur_checked, *goal_pos);
+        }
+        bm
+    }
+
+    fn recursive_pull(map: &TileMatrix, bm: &mut BitMatrix, cur_checked: &mut BitMatrix, cur_pos: Point2D) {
+        bm.set(cur_pos, true);
+        cur_checked.set(cur_pos, true);
+
+        let adjacent: Vec<(Point2D, Action)> = vec![ 
+            (cur_pos.from(Action::Left), Action::Left),
+            (cur_pos.from(Action::Right), Action::Right),
+            (cur_pos.from(Action::Up), Action::Up),
+            (cur_pos.from(Action::Down), Action::Down),
+        ];
+        
+        // check if adjacent boxes can be pulled
+        for (point, action) in adjacent {
+            if map.get(point) != Tile::Wall {
+                let next_point = point.from(action);
+                if map.get(next_point) != Tile::Wall {
+                    if cur_checked.get(point).unwrap() == false && 
+                    map.get(point) == Tile::Floor && 
+                    map.get(next_point) == Tile::Floor {
+                        IDAStarSolver::recursive_pull(map, bm, cur_checked, point);
+                    }
+                }
+            }
+        }
+        
+    }
+
+    fn is_simple_deadlock(&self, pos: Point2D) -> bool {
+        !self.simple_deadlocks.get(pos).unwrap()
     }
     
     // if a crate is not on a goal, then it is not solved.
@@ -339,7 +378,7 @@ impl IDAStarSolver {
         // find nodes player can access.
         let mut walk_map = BitMatrix::new(node.map.width, node.map.data.len());
         walk_map.set(node.player, true);
-        node.find_walkable_spaces(node.player, &mut walk_map);
+        util::find_walkable_spaces(&node.map, node.player, &mut walk_map);
 
         // find all the actions the player can take.
         let mut succ_vec: Vec<Node> = Vec::new();
@@ -356,6 +395,9 @@ impl IDAStarSolver {
                 
                 let can_walk = walk_map.get(push_start).unwrap();
                 if !can_walk {
+                    continue;
+                } else if self.is_simple_deadlock(crate_end) {
+                    self.rundat.nodes_skipped += 1;
                     continue;
                 }
 
@@ -378,12 +420,13 @@ impl IDAStarSolver {
                         );
 
                         // ignore node if it is deadlocked.
-                        if !new_node.is_deadlocked_simple(crate_end) {
+                        if !new_node.is_deadlocked(crate_end) {
                             self.rundat.nodes_generated += 1;
                             new_node.h = (self.heuristic)(&self, &new_node);
                             succ_vec.push(new_node);
                         } else {
                             self.rundat.nodes_deadlocked += 1;
+                            continue;
                         }
                     }
                 }
@@ -418,7 +461,7 @@ impl IDAStarSolver {
         }
         
         if self.debug {
-            println!("DEBUG: now starting A* ...");
+            println!("DEBUG: starting A* ...");
         }
 
         // Find the shortest solution of push-len $bound by using A* to do previously assumed pathfinding.
@@ -515,7 +558,7 @@ impl IDAStarSolver {
 
         if self.debug {
             println!("-------- Stats: --------");
-            println!("solutions = {}", solutions);
+            println!("solutions: {}", solutions);
             println!("final bound: {}", bound);
             println!("path len: {}", path.len());
             println!("time elapsed (in seconds) = {}", self.timer.elapsed().as_secs_f32());

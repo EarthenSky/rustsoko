@@ -141,9 +141,6 @@ impl Point2D {
     pub fn new(x: usize, y: usize) -> Point2D {
         Point2D { x, y }
     }
-    pub fn pos(&self) -> (usize, usize) {
-        (self.x, self.y)
-    }
     pub fn from(&self, action: Action) -> Point2D {
         match action {
             Action::Up => Point2D::new(self.x, self.y - 1),
@@ -211,6 +208,7 @@ pub struct RunDat {
     pub nodes_checked: usize,
     pub nodes_generated: usize,
     pub nodes_deadlocked: usize,
+    pub nodes_skipped: usize,
 }
 impl RunDat {
     pub fn new() -> RunDat {
@@ -218,6 +216,7 @@ impl RunDat {
             nodes_checked: 0,
             nodes_generated: 0,
             nodes_deadlocked: 0,
+            nodes_skipped: 0,
         }
     }
 
@@ -226,5 +225,6 @@ impl RunDat {
         println!("nodes checked = {}", self.nodes_checked);
         println!("nodes generated = {}", self.nodes_generated);
         println!("nodes deadlocked = {}", self.nodes_deadlocked);
+        println!("nodes skipped = {}", self.nodes_skipped);
     }
 }
