@@ -92,13 +92,13 @@ pub mod heuristic {
         }
 
         // attempt assignment
-        let mut assignments: Vec<(usize, usize)> = Vec::new();
+        let mut distance: usize = 0;
         let mut taken: Vec<bool> = Vec::new();
         taken.resize(width, false);
         for y in 0..width {
             for x in 0..width {
                 if dis_vec[y * width + x] == 0 && !taken[y] {
-                    assignments.push( (x, y) );
+                    distance += dis_vec_clone[y * width + x];
                     taken[y] = true;
                     break;
                 }
@@ -114,16 +114,10 @@ pub mod heuristic {
                         min_x = x;
                     }
                 }
-                assignments.push( (min_x, y) );
+                distance += dis_vec_clone[y * width + min_x];
             }
         }
 
-        assert!(assignments.len() == width);
-
-        let mut distance: usize = 0;
-        for a in assignments {
-            distance += dis_vec_clone[a.1 * width + a.0];
-        }
         return distance;
     }
 }

@@ -42,7 +42,7 @@ fn main() {
                 .help("Hashes deadlocked positions so that IDA* search can ignore the children deadlocked positions after secondary iterations."))
             .arg(Arg::with_name("greedy-perfect-match")
                 .long("greedy-perfect-match")
-                .help("This heuristic estimates the calculation of a perfect match of a bipartite graph between the goals and the crates, falling back to closest-box if neccesary. It is admissible."))
+                .help("This heuristic estimates the calculation of a perfect match of a bipartite graph between the goals and the crates, falling back to closest-box for initially unsatisfied nodes. It is admissible."))
             .arg(Arg::with_name("closest-box")
                 .long("closest-box")
                 .help("This heuristic is the distance from the closest box to the goal. It is admissible."))
@@ -90,7 +90,9 @@ fn main() {
         } else {
             do_batch_solve(puzzles, is_silent, deadlock_hashing, matches);
         }
-    }    
+    } else if let Some(matches) = matches.subcommand_matches("puzzle-gen") { 
+
+    }
 }
 
 fn do_normal_solve(puzzle: TileMatrix, is_silent: bool, deadlock_hashing: bool, matches: &ArgMatches) {
