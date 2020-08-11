@@ -1,4 +1,5 @@
 use bit_vec::BitVec;
+use std::process;
 
 #[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub enum Tile {
@@ -35,9 +36,173 @@ pub struct TileMatrix {
     pub data: Vec<Tile>,
 }
 impl TileMatrix {
-    //pub fn get(&self, x: usize, y: usize) -> Tile {
-    //    self.data[y * self.width + x]
-    //}
+    pub fn from_string(puzzle_string: &str) -> TileMatrix {
+        match puzzle_string.find('\n') {
+            Some(v) => v,
+            None => {
+                println!("Error: puzzle file is malformed.\nreason: must include newline.");
+                process::exit(1);
+            },
+        };
+    
+        // find puzzle width.
+        let mut puzzle_width: usize = 0;
+        let mut beg_pos: usize = 0;
+        loop {
+            match puzzle_string[beg_pos..].find('\n') {
+                Some(v) => {
+                    beg_pos += v + 1;
+                    if v > puzzle_width {
+                        puzzle_width = v;
+                    }
+                },
+                None => break,
+            };
+            if beg_pos > puzzle_string.len() { 
+                break; 
+            }
+        }
+    
+        if puzzle_width == 0 {
+            println!("Error: puzzle file is malformed.\nreason: newline cannot be first character.");
+            process::exit(1);
+        }
+    
+        let mut player_count = 0;
+        let mut goal_count = 0;
+        let mut crate_count = 0;
+    
+        // map string to Tile enum.
+        let mut line_number = 0;
+        let mut index = 0;
+        let mut tile_vec: Vec<Tile> = Vec::new();
+        for ch in puzzle_string.chars() {
+            match ch {
+                '#' => tile_vec.push(Tile::Wall),
+                '@' => {
+                    tile_vec.push(Tile::Player); 
+                    player_count += 1; 
+                },
+                '+' => {
+                    tile_vec.push(Tile::PlayerGoal); 
+                    player_count += 1; 
+                    goal_count += 1;
+                },
+                '$' => {
+                    tile_vec.push(Tile::Crate);
+                    crate_count += 1;
+                },
+                '*' => {
+                    tile_vec.push(Tile::CrateGoal);
+                    goal_count += 1;
+                    crate_count += 1;
+                },
+                '.' => {
+                    tile_vec.push(Tile::Goal); 
+                    goal_count += 1;
+                },
+                ' ' => tile_vec.push(Tile::Floor),
+                '\n' => {
+                    // add extra padding to the map.
+                    line_number += 1;
+                    for _ in index..(line_number * puzzle_width) {
+                        tile_vec.push(Tile::Floor);
+                    }
+                    index = line_number * puzzle_width;
+                    index -= 1;
+                },
+                '\r' => index -= 1,
+                _ => {
+                    println!("Error: puzzle file is malformed.\nreason: invalid character in puzzle file, \"{}\".\npuzzle can only contain the characters \"#@+$*. \"", ch);
+                    process::exit(1);
+                },
+            };
+            index += 1;
+        }
+    
+        if player_count != 1 {
+            println!("Error: puzzle file is malformed.\nreason: There must be exactly 1 player tile, \"@\".");
+            process::exit(1);
+        }
+    
+        if crate_count != goal_count {
+            println!("Error: puzzle file is malformed.\nreason: There must be the same number of goals and crates.");
+            process::exit(1);
+        }
+    
+        TileMatrix {
+            width: puzzle_width, 
+            data: tile_vec,
+        }
+    }
+    pub fn from_string_bare(puzzle_string: &str) -> TileMatrix {
+        match puzzle_string.find('\n') {
+            Some(v) => v,
+            None => {
+                println!("Error: puzzle file is malformed.\nreason: must include newline.");
+                process::exit(1);
+            },
+        };
+    
+        // find puzzle width.
+        let mut puzzle_width: usize = 0;
+        let mut beg_pos: usize = 0;
+        loop {
+            match puzzle_string[beg_pos..].find('\n') {
+                Some(v) => {
+                    beg_pos += v + 1;
+                    if v > puzzle_width {
+                        puzzle_width = v;
+                    }
+                },
+                None => break,
+            };
+            if beg_pos > puzzle_string.len() { 
+                break; 
+            }
+        }
+    
+        if puzzle_width == 0 {
+            println!("Error: puzzle file is malformed.\nreason: newline cannot be first character.");
+            process::exit(1);
+        }
+    
+        // map string to Tile enum.
+        let mut line_number = 0;
+        let mut index = 0;
+        let mut tile_vec: Vec<Tile> = Vec::new();
+        for ch in puzzle_string.chars() {
+            match ch {
+                '#' => tile_vec.push(Tile::Wall),
+                '@' => tile_vec.push(Tile::Player),
+                '+' => tile_vec.push(Tile::PlayerGoal),
+                '$' => tile_vec.push(Tile::Crate),
+                '*' => tile_vec.push(Tile::CrateGoal),
+                '.' => tile_vec.push(Tile::Goal),
+                ' ' => tile_vec.push(Tile::Floor),
+                '\n' => {
+                    // add extra padding to the map.
+                    line_number += 1;
+                    for _ in index..(line_number * puzzle_width) {
+                        tile_vec.push(Tile::Floor);
+                    }
+                    index = line_number * puzzle_width;
+                    index -= 1;
+                },
+                '\r' => index -= 1,
+                _ => {
+                    println!("Error: puzzle file is malformed.\nreason: invalid character in puzzle file, \"{}\".\npuzzle can only contain the characters \"#@+$*. \"", ch);
+                    process::exit(1);
+                },
+            };
+            index += 1;
+        }
+    
+        TileMatrix {
+            width: puzzle_width, 
+            data: tile_vec,
+        }
+    }
     pub fn get(&self, p: Point2D) -> Tile {
         self.data[p.y * self.width + p.x]
     }

@@ -274,7 +274,7 @@ impl IDAStarSolver {
             };
         }
 
-        let simple_deadlocks: BitMatrix = IDAStarSolver::find_simple_deadlocks(&puzzle, &goals);
+        let simple_deadlocks: BitMatrix = util::find_simple_deadlocks(&puzzle, &goals);
 
         // puzzle size is a good vector size estimate which should increase performance because IDA* doesn't particularly
         // need lots of memory. -------------------------------> vVVVv
@@ -289,63 +289,6 @@ impl IDAStarSolver {
         };
         solver.path[0].h = (solver.heuristic)(&solver, &solver.path[0]); 
         solver
-    }
-
-    fn find_simple_deadlocks(map: &TileMatrix, goals: &Vec<Point2D>) -> BitMatrix {
-        let mut bm = BitMatrix::new(map.width, map.data.len());
-        let mut new_map_data: Vec<Tile> = Vec::new();
-
-        // remove all tiles but floor and wall.
-        for tile in &map.data {
-            new_map_data.push(
-                match tile {
-                    Tile::Player => Tile::Floor,
-                    Tile::PlayerGoal => Tile::Floor,
-                    Tile::Crate => Tile::Floor,
-                    Tile::CrateGoal => Tile::Floor,
-                    Tile::Goal => Tile::Floor,
-                    _ => *tile,
-                }
-            );
-        }
-        let new_map = TileMatrix {
-            width: map.width,
-            data: new_map_data,
-        };
-        
-        // drag goal
-        for goal_pos in goals {
-            let mut cur_checked = BitMatrix::new(map.width, map.data.len());
-            IDAStarSolver::recursive_pull(&new_map, &mut bm, &mut cur_checked, *goal_pos);
-        }
-        bm
-    }
-
-    fn recursive_pull(map: &TileMatrix, bm: &mut BitMatrix, cur_checked: &mut BitMatrix, cur_pos: Point2D) {
-        bm.set(cur_pos, true);
-        cur_checked.set(cur_pos, true);
-
-        let adjacent: Vec<(Point2D, Action)> = vec![ 
-            (cur_pos.from(Action::Left), Action::Left),
-            (cur_pos.from(Action::Right), Action::Right),
-            (cur_pos.from(Action::Up), Action::Up),
-            (cur_pos.from(Action::Down), Action::Down),
-        ];
-        
-        // check if adjacent boxes can be pulled
-        for (point, action) in adjacent {
-            if map.get(point) != Tile::Wall {
-                let next_point = point.from(action);
-                if map.get(next_point) != Tile::Wall {
-                    if cur_checked.get(point).unwrap() == false && 
-                    map.get(point) == Tile::Floor && 
-                    map.get(next_point) == Tile::Floor {
-                        IDAStarSolver::recursive_pull(map, bm, cur_checked, point);
-                    }
-                }
-            }
-        }
-        
     }
 
     fn is_simple_deadlock(&self, pos: Point2D) -> bool {
@@ -442,7 +385,7 @@ impl IDAStarSolver {
 
     fn ida_star(&mut self) -> (Vec<Action>, usize, usize) {
         let mut bound = self.path.last().unwrap().h; // Oh damn, this is smart.
-        while self.solutions.is_empty() {  // TODO: after 300s give statistics of how close it was.
+        while self.solutions.is_empty() {
             if self.debug {
                 println!("DEBUG: bound updated to {}", bound);
             }
@@ -574,7 +517,7 @@ impl IDAStarSolver {
                 return format!("{},{},{},{},{},{}", self.timer.elapsed().as_secs_f32(), self.rundat.nodes_checked, solutions, bound, path.len(), "".to_string());
             }
         }
-        
+
         if self.debug {
             return Action::to_string(&path);
         } else {

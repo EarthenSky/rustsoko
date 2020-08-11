@@ -8,6 +8,7 @@ mod util;
 mod types;
 mod level_reader;
 mod ida_star_solver;
+mod level_generator;
 
 use ida_star_solver::{IDAStarSolver, heuristic};
 use types::{TileMatrix};
@@ -26,13 +27,13 @@ fn main() {
             .short("s")
             .long("silent")
             .help("Returns puzzle stats in csv format -> time_elapsed,nodes_checked,solutions,pushes,moves,solution_string"))
-        .arg(Arg::with_name("INPUT")
-            .required(true)
-            .index(1)
-            .help("Path to sokoban puzzle file to solve"))
         .subcommand(
             SubCommand::with_name("solve")
             .about("Uses IDA* to do a tree search on the problem. Puzzles will be returned 'unsolved' if they take more than 300s and don't find a solution.")
+            .arg(Arg::with_name("INPUT")
+                .required(true)
+                .index(1)
+                .help("Path to sokoban puzzle file to solve"))
             .arg(Arg::with_name("profile")
                 .long("profile")
                 .help("Runs the given search through a profiler and returns a flamegraph. \
@@ -58,28 +59,51 @@ fn main() {
         .subcommand(
             SubCommand::with_name("puzzle-gen")
             .about("Generates a .sok file filled with randomly generated puzzles, many of which may be unsolvable.")
+            .arg(Arg::with_name("OUTPUT")
+                .required(true)
+                .index(1)
+                .help("filename of .sok file. Extension is added automatically. ex: \"test_files\" -> test_files.sok"))
+            .arg(Arg::with_name("width")
+                .required(true)
+                .index(2))
+            .arg(Arg::with_name("height")
+                .required(true)
+                .index(3))
+            .arg(Arg::with_name("batch-size")
+                .required(true)
+                .index(4)
+                .help("How many puzzles to put in the .sok file"))
+            .arg(Arg::with_name("goal-number")
+                .required(true)
+                .index(5)
+                .help("How many goals to include in the puzzle"))
+            .arg(Arg::with_name("wall-number")
+                .required(true)
+                .index(6)
+                .help("How many walls to include in the puzzle"))
         )
         .get_matches();
 
     let is_silent = matches.is_present("silent");
-    let filepath = matches.value_of("INPUT").unwrap();
-
-    // Load file
-    let mut puzzles: Vec<TileMatrix>;
-    let mut is_dot_sok = false;
-    match level_reader::get_extension_from_filename(filepath) {
-        Some(s) => if s == "sok" {
-            puzzles = level_reader::read_sok(filepath, !is_silent);
-            is_dot_sok = true;
-        } else {  // any other file extension -- like .txt -- is allowed
-            puzzles = vec![level_reader::read_puzzle(filepath, !is_silent)];
-        },
-        None => {
-            puzzles = vec![level_reader::read_puzzle(filepath, !is_silent)];
-        },
-    } 
     
     if let Some(matches) = matches.subcommand_matches("solve") {
+        let filepath = matches.value_of("INPUT").unwrap();
+
+        // Load file
+        let mut puzzles: Vec<TileMatrix>;
+        let mut is_dot_sok = false;
+        match level_reader::get_extension_from_filename(filepath) {
+            Some(s) => if s == "sok" {
+                puzzles = level_reader::read_sok(filepath, !is_silent);
+                is_dot_sok = true;
+            } else {  // any other file extension -- like .txt -- is allowed
+                puzzles = vec![level_reader::read_puzzle(filepath, !is_silent)];
+            },
+            None => {
+                puzzles = vec![level_reader::read_puzzle(filepath, !is_silent)];
+            },
+        } 
+
         let mut deadlock_hashing: bool = false;
         if matches.is_present("deadlock-hashing") {
             deadlock_hashing = true;
@@ -91,7 +115,32 @@ fn main() {
             do_batch_solve(puzzles, is_silent, deadlock_hashing, matches);
         }
     } else if let Some(matches) = matches.subcommand_matches("puzzle-gen") { 
+        let file_name = matches.value_of("OUTPUT").unwrap();
+        if file_name.contains("/") {
+            println!("Command Error: invalid filename -> cannot contain /");
+            process::exit(1);
+        }
+        let width = usize_parse( matches.value_of("width").unwrap(), "width" );
+        let height = usize_parse( matches.value_of("height").unwrap(), "height" );
+        let batch_num = usize_parse( matches.value_of("batch-size").unwrap(), "batch-size" );
+        let goal_num = usize_parse( matches.value_of("goal-number").unwrap(), "goal-number" );
+        let wall_num = usize_parse( matches.value_of("wall-number").unwrap(), "wall-number" );
 
+        if width <= 3 {
+            println!("Command Error: width too small -> width must be 4 or larger");
+            process::exit(1);
+        } else if height <= 3 {
+            println!("Command Error: height too small -> width must be 4 or larger");
+            process::exit(1);
+        } else if batch_num == 0 {
+            println!("Command Error: batch-size must be non-zero");
+            process::exit(1);
+        } else if goal_num + wall_num > ((width * height) - ((2*width + 2*height) - 4)) / 2 {
+            println!("Command Error: too many goal & wall spaces. goals + walls must be less than empty_spaces / 2.");
+            process::exit(1);
+        }
+
+        level_generator::make_sok(file_name, width, height, batch_num, goal_num, wall_num);
     }
 }
 
@@ -122,7 +171,6 @@ fn do_normal_solve(puzzle: TileMatrix, is_silent: bool, deadlock_hashing: bool, 
     }
 }
 
-// TODO: output information nicely.
 fn do_batch_solve(mut puzzles: Vec<TileMatrix>, is_silent: bool, deadlock_hashing: bool, matches: &ArgMatches) {
     let mut i = 0;
     for puzzle in puzzles.drain(..) {
@@ -171,5 +219,15 @@ fn execute_solver(solver: Option<IDAStarSolver>, is_silent: bool) {
     } else {
         println!("Command Error: A heuristic must be stated. ex: --closest-box");
         process::exit(1);
+    }
+}
+
+fn usize_parse(s: &str, error_kind: &str) -> usize {
+    match s.parse::<usize>() {
+        Ok(num) => num,
+        Err(_) => {
+            println!("Command Error: invalid {} -> must be integer", error_kind);
+            process::exit(1);
+        }
     }
 }

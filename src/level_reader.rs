@@ -123,7 +123,7 @@ pub fn read_puzzle(filepath: &str, print_puzzle: bool) -> TileMatrix {
         },
     };
     
-    let puzzle: TileMatrix = puzzle_string_to_puzzle(&puzzle_string[..]);
+    let puzzle: TileMatrix = TileMatrix::from_string(&puzzle_string[..]);
 
     if print_puzzle {
         println!("Successfully loaded the following puzzle:");
@@ -151,6 +151,16 @@ pub fn read_sok(filepath: &str, verbose: bool) -> Vec<TileMatrix> {
             "looking_for_header" => {
                 if line == HEADER_START {
                     state = "looking_for_header_end";
+                } else {
+                    // case: no header.
+                    match line.parse::<usize>() {
+                        Ok(num) => {
+                            if num == current_number {
+                                state = "saving_puzzle";
+                            }
+                        },
+                        Err(_) => (),
+                    }
                 }
             },
             "looking_for_header_end" => {
@@ -173,7 +183,7 @@ pub fn read_sok(filepath: &str, verbose: bool) -> Vec<TileMatrix> {
                 if line.len() != 0 && "# @$.+*".contains(line.chars().nth(0).unwrap()) {  
                     current_puzzle_string.push_str( &format!("{}\n", line) );
                 } else {  // case: invalid line -> current puzzle is over.
-                    let cur_puzzle: TileMatrix = puzzle_string_to_puzzle(&current_puzzle_string[..]);
+                    let cur_puzzle: TileMatrix = TileMatrix::from_string(&current_puzzle_string[..]);
                     puzzles.push(cur_puzzle);
 
                     state = "looking_for_puzzle_number";

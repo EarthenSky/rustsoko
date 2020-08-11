@@ -6,6 +6,8 @@ use crate::types::{Action, TileMatrix, Tile, Point2D, BitMatrix};
 
 // This module is for utility algorithms like floodfill, manhattan_dis, and a*.
 
+// ************************************************************************** //
+
 // effectively a recursive floodfill algorithm.
 pub fn find_walkable_spaces(map: &TileMatrix, current: Point2D, walk_map: &mut BitMatrix) {
     let adjacent: Vec<Point2D> = vec![ 
@@ -31,6 +33,67 @@ pub fn find_walkable_spaces(map: &TileMatrix, current: Point2D, walk_map: &mut B
     }
 }
 
+// ************************************************************************** //
+
+pub fn find_simple_deadlocks(map: &TileMatrix, goals: &Vec<Point2D>) -> BitMatrix {
+    let mut bm = BitMatrix::new(map.width, map.data.len());
+    let mut new_map_data: Vec<Tile> = Vec::new();
+
+    // remove all tiles but floor and wall.
+    for tile in &map.data {
+        new_map_data.push(
+            match tile {
+                Tile::Player => Tile::Floor,
+                Tile::PlayerGoal => Tile::Floor,
+                Tile::Crate => Tile::Floor,
+                Tile::CrateGoal => Tile::Floor,
+                Tile::Goal => Tile::Floor,
+                _ => *tile,
+            }
+        );
+    }
+    let new_map = TileMatrix {
+        width: map.width,
+        data: new_map_data,
+    };
+    
+    // drag goal
+    for goal_pos in goals {
+        let mut cur_checked = BitMatrix::new(map.width, map.data.len());
+        recursive_pull(&new_map, &mut bm, &mut cur_checked, *goal_pos);
+    }
+    bm
+}
+
+fn recursive_pull(map: &TileMatrix, bm: &mut BitMatrix, cur_checked: &mut BitMatrix, cur_pos: Point2D) {
+    bm.set(cur_pos, true);
+    cur_checked.set(cur_pos, true);
+
+    let adjacent: Vec<(Point2D, Action)> = vec![ 
+        (cur_pos.from(Action::Left), Action::Left),
+        (cur_pos.from(Action::Right), Action::Right),
+        (cur_pos.from(Action::Up), Action::Up),
+        (cur_pos.from(Action::Down), Action::Down),
+    ];
+    
+    // check if adjacent boxes can be pulled
+    for (point, action) in adjacent {
+        if map.get(point) != Tile::Wall {
+            let next_point = point.from(action);
+            if map.get(next_point) != Tile::Wall {
+                if cur_checked.get(point).unwrap() == false && 
+                map.get(point) == Tile::Floor && 
+                map.get(next_point) == Tile::Floor {
+                    recursive_pull(map, bm, cur_checked, point);
+                }
+            }
+        }
+    }
+    
+}
+
+// ************************************************************************** //
+
 pub fn manhattan_distance(p1: Point2D, p2: Point2D) -> usize {
     let mut val: usize = 0;
     if p1.x < p2.x {
@@ -45,6 +108,8 @@ pub fn manhattan_distance(p1: Point2D, p2: Point2D) -> usize {
     }
     val
 }
+
+// ************************************************************************** //
 
 // the heuristic function used is simple manhattan distance
 pub fn astar_pathfind(puzzle_map: &TileMatrix, push_action: Action, 
@@ -124,3 +189,5 @@ fn a_star(puzzle_map: &TileMatrix, start: Point2D, goal: Point2D, h: fn(Point2D,
     // We should never get here because of the validity of the flood fill algorithm
     return Vec::new(); 
 }
+
+// ************************************************************************** //
