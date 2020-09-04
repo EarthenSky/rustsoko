@@ -17,3 +17,8 @@ This is a sokoban solver I made for my AI class, CMPT310, which uses IDA* and A*
 - The easier sets which this solver can handle most of are: 
   - Microban
   - SokEvo
+  
+  
+### TODO:
+- Memoize A* & flood fill calls.
+- Create greedy A* & normal A* based (memoized) heuristics. -> due to memoization, greedy A* should perform even better than with manhattan distance.
